@@ -39,9 +39,9 @@ public class CellIndexSearch extends NeighborSearch {
         Matrix<List<Particle>> matrix = getMatrixFromParticles(particles);
 
         for (Particle particle : particles) {
-            int x = (int) (particle.x / l);
-            int y = (int) (particle.y / l);
-            int d = (int) Math.ceil(radius / l);
+            int x = (int) (particle.x / m);
+            int y = (int) (particle.y / m);
+            int d = (int) Math.ceil(radius / m);
 
             int xmin = Math.max(0, x - d);
             int ymin = Math.max(0, y - d);
