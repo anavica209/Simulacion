@@ -1,4 +1,4 @@
-package simu1;
+package ar.edu.itba.simul;
 
 import java.util.ArrayList;
 import java.util.HashMap;
