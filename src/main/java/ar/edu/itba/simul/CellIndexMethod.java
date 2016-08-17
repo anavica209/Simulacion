@@ -81,12 +81,12 @@ public class CellIndexMethod {
 
 	private static int getXMatrixPosition(Particle seleccionada) {
 		
-		return (int)Math.floor(seleccionada.getX());
+		return (int)Math.floor(seleccionada.x);
 	}
 
 	private static int getYMatrixPosition(Particle seleccionada) {
 		
-		return (int)Math.floor(seleccionada.getY());
+		return (int)Math.floor(seleccionada.y);
 	}
 
 	
