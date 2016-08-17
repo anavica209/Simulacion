@@ -17,18 +17,30 @@ public class Neighbors {
         return neighbors;
     }
 
+    public Set<Pair<Particle, Particle>> getNeighborPairs() {
+        Set<Pair<Particle, Particle>> set = new HashSet<>();
+
+        for (Map.Entry<Particle, Set<Particle>> entry : neighbors.entrySet()) {
+            for (Particle particle : entry.getValue()) {
+                set.add(new Pair<>(entry.getKey(), particle));
+            }
+        }
+
+        return set;
+    }
+
     public void addNeighbors(Particle p1, Particle p2) {
         addNeighbor(p1, p2);
         addNeighbor(p2, p1);
     }
 
     private void addNeighbor(Particle p1, Particle p2) {
-        Set<Particle> list = neighbors.get(p1);
-        if (list == null) {
-            list = new HashSet<>();
-            neighbors.put(p1, list);
+        Set<Particle> set = neighbors.get(p1);
+        if (set == null) {
+            set = new HashSet<>();
+            neighbors.put(p1, set);
         }
-        list.add(p2);
+        set.add(p2);
     }
 
     void setExecutionTime(long executionTime) {

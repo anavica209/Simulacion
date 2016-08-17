@@ -22,7 +22,7 @@ public class CellIndexSearchTests {
             double x = rand.nextDouble() * SIZE;
             double y = rand.nextDouble() * SIZE;
             double radius = rand.nextDouble() * MAX_RADIUS;
-            particles.add(new Particle(x, y, radius));
+            particles.add(new Particle(x, y, 0));
         }
 
         return particles;
@@ -34,9 +34,9 @@ public class CellIndexSearchTests {
         NeighborSearch callIndex = new CellIndexSearch(particles, SIZE, 10);
         NeighborSearch bruteForce = new BruteForceSearch(particles, SIZE, 10);
 
-        Neighbors neighbors = callIndex.timedSearch(10.0);
-        Neighbors expected = bruteForce.timedSearch(10.0);
+        Neighbors neighbors = callIndex.timedSearch(5);
+        Neighbors expected = bruteForce.timedSearch(5);
 
-        assertEquals(expected, neighbors);
+        assertEquals(expected.getNeighborPairs(), neighbors.getNeighborPairs());
     }
 }

@@ -11,7 +11,12 @@ public class Particle {
 		this.radius = radius;
 	}
 
-	public String toString() {
-		return String.format("Particle{x=%.2f;y=%.2f;radius=%.2f}", x, y , radius);
-	}
+    @Override
+    public String toString() {
+        return "Particle{" +
+                "x=" + x +
+                ", y=" + y +
+                ", radius=" + radius +
+                '}';
+    }
 }

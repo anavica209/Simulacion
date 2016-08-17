@@ -14,7 +14,11 @@ public abstract class NeighborSearch {
         this.m = m;
     }
 
-    protected double distance(Particle selected, Particle particle) {
+    protected void debug(String fmt, Object... args) {
+        System.out.println(String.format(fmt, args));
+    }
+
+    static double distance(Particle selected, Particle particle) {
         double dx = Math.abs(particle.x - selected.x);
         double dy = Math.abs(particle.x - selected.x);
         double distance = Math.sqrt(dx * dx + dy * dy);

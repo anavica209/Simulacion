@@ -39,9 +39,15 @@ public class CellIndexSearch extends NeighborSearch {
         Matrix<List<Particle>> matrix = getMatrixFromParticles(particles);
 
         for (Particle particle : particles) {
+            debug("Searching for neighbors of particle (%f; %f) within radius %f", particle.x, particle.y, radius);
+
             int x = (int) (particle.x / m);
             int y = (int) (particle.y / m);
             int d = (int) Math.ceil(radius / m);
+
+            debug("Particle is in block (%d, %d)", x, y);
+
+            debug("Since block size is %f, we are going to look %d blocks around", l / m, d);
 
             int xmin = Math.max(0, x - d);
             int ymin = Math.max(0, y - d);
@@ -51,11 +57,18 @@ public class CellIndexSearch extends NeighborSearch {
 
             for (int i = xmin; i <= xmax; i++) {
                 for (int j = ymin; j <= ymax; j++) {
+
+                    debug("Searching for particles in cell (%d, %d)", i, j);
+
                     List<Particle> cell = matrix.get(i, j);
 
                     for (Particle neighbor : cell) {
-                        if (particle != neighbor && distance(particle, neighbor) <= radius) {
+                        double dist = distance(particle, neighbor);
+                        if (particle != neighbor && dist <= radius) {
+                            debug("Neighbor (%f; %f) is within radius (distance: %f)", neighbor.x, neighbor.y, dist);
                             result.addNeighbors(particle, neighbor);
+                        } else if (particle != neighbor) {
+                            debug("Neighbor (%f; %f) is NOT within radius (distance: %f)", neighbor.x, neighbor.y, dist);
                         }
                     }
                 }
@@ -73,8 +86,8 @@ public class CellIndexSearch extends NeighborSearch {
 		}
 
 		for (Particle p : particles){
-			int x = (int) (p.x / m);
-			int y = (int) (p.y / m);
+			int x = (int) (p.x / (l / m));
+			int y = (int) (p.y / (l / m));
 
             List<Particle> cell = matrix.get(x, y);
             cell.add(p);

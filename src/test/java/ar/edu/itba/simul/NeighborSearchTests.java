@@ -1,0 +1,17 @@
+package ar.edu.itba.simul;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+public class NeighborSearchTests {
+
+    @Test
+    public void distance() {
+        Particle p1 = new Particle(0, 0, 0);
+        Particle p2 = new Particle(1, 1, 0);
+
+        assertEquals(Math.sqrt(2), NeighborSearch.distance(p1, p2), 1e-10);
+    }
+
+}
