@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,9 +35,12 @@ public class CellIndexSearchTests {
         NeighborSearch callIndex = new CellIndexSearch(particles, SIZE, 10);
         NeighborSearch bruteForce = new BruteForceSearch(particles, SIZE, 10);
 
-        Neighbors neighbors = callIndex.timedSearch(5);
-        Neighbors expected = bruteForce.timedSearch(5);
+        Neighbors n1 = callIndex.timedSearch(5);
+        Neighbors n2 = bruteForce.timedSearch(5);
 
-        assertEquals(expected.getNeighborPairs(), neighbors.getNeighborPairs());
+        Set<Pair<Particle, Particle>> expected = n1.getNeighborPairs();
+        Set<Pair<Particle, Particle>> neighbors = n2.getNeighborPairs();
+
+        assertEquals(expected, neighbors);
     }
 }

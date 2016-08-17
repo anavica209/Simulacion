@@ -20,7 +20,7 @@ public abstract class NeighborSearch {
 
     static double distance(Particle selected, Particle particle) {
         double dx = Math.abs(particle.x - selected.x);
-        double dy = Math.abs(particle.x - selected.x);
+        double dy = Math.abs(particle.y - selected.y);
         double distance = Math.sqrt(dx * dx + dy * dy);
         return Math.max(0, distance - particle.radius - selected.radius);
     }
