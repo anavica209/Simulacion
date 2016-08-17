@@ -1,4 +1,4 @@
-package ar.edu.itba.simul;
+package ar.edu.itba.simul.group8;
 
 import org.junit.Test;
 
@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
-public class CellIndexSearchTests {
+public class CellIndexSearchTest {
 
     private static final double SIZE = 100.0;
     private static final double MAX_RADIUS = 10.0;

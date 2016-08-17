@@ -1,4 +1,4 @@
-package ar.edu.itba.simul;
+package ar.edu.itba.simul.group8;
 
 import java.util.*;
 

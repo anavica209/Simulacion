@@ -1,8 +1,7 @@
-package ar.edu.itba.simul;
+package ar.edu.itba.simul.group8;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CellIndexSearch extends NeighborSearch {
 

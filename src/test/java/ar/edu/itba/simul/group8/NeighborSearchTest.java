@@ -1,10 +1,10 @@
-package ar.edu.itba.simul;
+package ar.edu.itba.simul.group8;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class NeighborSearchTests {
+public class NeighborSearchTest {
 
     @Test
     public void distance() {
