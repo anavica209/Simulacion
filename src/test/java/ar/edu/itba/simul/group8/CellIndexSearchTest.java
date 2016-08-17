@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class CellIndexSearchTest {
 
     private static final double SIZE = 100.0;
-    private static final double MAX_RADIUS = 10.0;
+    private static final double MAX_RADIUS = 2.0;
 
     private List<Particle> generateParticles(int num) {
         List<Particle> particles = new ArrayList<>(num);
@@ -23,7 +23,7 @@ public class CellIndexSearchTest {
             double x = rand.nextDouble() * SIZE;
             double y = rand.nextDouble() * SIZE;
             double radius = rand.nextDouble() * MAX_RADIUS;
-            particles.add(new Particle(x, y, 0));
+            particles.add(new Particle(x, y, radius));
         }
 
         return particles;
