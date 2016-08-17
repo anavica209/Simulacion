@@ -4,6 +4,8 @@ import java.util.*;
 
 public abstract class NeighborSearch {
 
+    private static final boolean DEBUG = false;
+
     protected final List<Particle> particles;
     protected final double l;
     protected final int m;
@@ -15,7 +17,9 @@ public abstract class NeighborSearch {
     }
 
     protected void debug(String fmt, Object... args) {
-        System.out.println(String.format(fmt, args));
+        if (DEBUG) {
+            System.out.println(String.format(fmt, args));
+        }
     }
 
     static double distance(Particle selected, Particle particle) {
