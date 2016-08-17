@@ -1,24 +1,17 @@
 package simu1;
 
-import java.awt.Point;
-
 public class Particula {
 
-	Point posicion;
-	
 	double radio;
+
+	private double x;
+
+	private double y;
 	
-	public Particula(Point posicion, double radio) {
-		this.posicion=posicion;
+	public Particula(double x, double y, double radio) {
+		this.x=x;
+		this.y=y;
 		this.radio=radio;
-	}
-
-	public Point getPosicion() {
-		return posicion;
-	}
-
-	public void setPosicion(Point posicion) {
-		this.posicion = posicion;
 	}
 
 	public double getRadio() {
@@ -27,6 +20,22 @@ public class Particula {
 
 	public void setRadio(double radio) {
 		this.radio = radio;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
 	}
 	
 }

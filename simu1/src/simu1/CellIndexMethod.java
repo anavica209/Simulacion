@@ -1,5 +1,6 @@
 package simu1;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,6 @@ public class CellIndexMethod {
 	//
 	private Result algoritmoSinCPC(Object[][] matriz, List<Particula> particulas, double ele, int eme, int radioCell, Particula seleccionada){ // N=particulas.size()
 		long time= System.currentTimeMillis();
-		Map<Particula, List<Particula>> m=new HashMap<Particula, List<Particula>>();
 		
 		
 		asignarParticulasAMatriz(matriz, particulas);
@@ -41,39 +41,41 @@ public class CellIndexMethod {
 		int i=obtenerPosicionEnMatrizX(seleccionada);
 		int j=obtenerPosicionEnMatrizY(seleccionada);
 		
+		Map<Integer, Particula> vecinos = new HashMap<Integer, Particula>();
 		if(matriz[i][j]!=null){
 			@SuppressWarnings("unchecked")
 			List<Particula> lista = (List<Particula>)matriz[i][j];
 
 			for(Particula particula: lista){
-				List<Particula> vecinos = new ArrayList<Particula>();
 				for(int x=-radioCell; x<=radioCell;x++){
 					for(int y=-radioCell; y<=radioCell; y++){
 //						si la coordenada esta dentro del rango de indices de la matriz, evaluar las particulas en esas celdas.
 						if(perteneceMatriz(i, j, x, y, eme)){
 //									considerar criterios para agregado de particulas con areas, 
 //									se agrega una particula si su centro se encuentra fuera de la zona pero entra por el radio?
-							vecinos.addAll((List<Particula>)matriz[i+x][j+y]);
+//							vecinos.addAll((List<Particula>)matriz[i+x][j+y]);
 						}
 					}
 				}
-				
-				m.put(particula, vecinos);
 			}
 					
 		}
 		
-		return new Result(m, System.currentTimeMillis()-time);
+		return new Result(vecinos, System.currentTimeMillis()-time);
+	}
+
+	private void asignarParticulasAMatriz(Object[][] matriz, List<Particula> particulas) {
+		
 	}
 
 	private int obtenerPosicionEnMatrizX(Particula seleccionada) {
 		
-		return (int)Math.floor(seleccionada.getPosicion().getX());
+		return (int)Math.floor(seleccionada.getX());
 	}
 
 	private int obtenerPosicionEnMatrizY(Particula seleccionada) {
 		
-		return (int)Math.floor(seleccionada.getPosicion().getY());
+		return (int)Math.floor(seleccionada.getY());
 	}
 
 	
@@ -85,4 +87,17 @@ public class CellIndexMethod {
 		return true;
 	}
 
+	
+	public static void main(String[] args) {
+		int eme=20;
+		List<Particula> list=generador(eme);
+	}
+
+	private static List<Particula> generador(int eme) {
+		List<Particula> list=new ArrayList<Particula>();
+		for(int i=0; i<eme; i++){
+			list.add(new Particula(Math.random()*eme, Math.random()*eme, Math.random()));
+		}
+		return list;
+	}
 }
