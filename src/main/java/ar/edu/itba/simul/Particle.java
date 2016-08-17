@@ -1,6 +1,6 @@
-package simu1;
+package ar.edu.itba.simul;
 
-public class Particula {
+public class Particle {
 
 	double radio;
 
@@ -8,7 +8,7 @@ public class Particula {
 
 	private double y;
 	
-	public Particula(double x, double y, double radio) {
+	public Particle(double x, double y, double radio) {
 		this.x=x;
 		this.y=y;
 		this.radio=radio;
