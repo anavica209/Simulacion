@@ -1,47 +1,38 @@
 package ar.edu.itba.simul;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class NeighborSearch {
 
     protected final List<Particle> particles;
-    protected final double n;
     protected final double l;
-    protected final double m;
+    protected final int m;
 
-    NeighborSearch(List<Particle> particles, double n, double l, double m) {
+    NeighborSearch(List<Particle> particles, double l, int m) {
         this.particles = particles;
-        this.n = n;
         this.l = l;
         this.m = m;
     }
 
-    public Neighbors timedSearch(Particle selected, double radius) {
+    protected double distance(Particle selected, Particle particle) {
+        double dx = Math.abs(particle.x - selected.x);
+        double dy = Math.abs(particle.x - selected.x);
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        return Math.max(0, distance - particle.radius - selected.radius);
+    }
+
+    public Neighbors timedSearch(double radius) {
         long start = System.nanoTime();
-        List<Particle> result = search(selected, radius);
+
+        Neighbors result = new Neighbors();
+        search(radius, result);
+
         long end = System.nanoTime();
 
-        return new Neighbors(result, end - start);
+        result.setExecutionTime(end - start);
+
+        return result;
     }
 
-    public abstract List<Particle> search(Particle selected, double radius);
-
-    static class Neighbors {
-        private final List<Particle> particles;
-        private final long executionTime;
-
-        Neighbors(List<Particle> particles, long executionTime) {
-            this.particles = particles;
-            this.executionTime = executionTime;
-        }
-
-        public List<Particle> getParticles() {
-            return Collections.unmodifiableList(particles);
-        }
-
-        public long getExecutionTime() {
-            return executionTime;
-        }
-    }
+    public abstract void search(double radius, Neighbors result);
 }

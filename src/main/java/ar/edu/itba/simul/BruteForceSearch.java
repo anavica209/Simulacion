@@ -1,31 +1,21 @@
 package ar.edu.itba.simul;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BruteForceSearch extends NeighborSearch {
 
-    BruteForceSearch(List<Particle> particles, double n, double l, double m) {
-        super(particles, n, l, m);
+    BruteForceSearch(List<Particle> particles, double l, int m) {
+        super(particles, l, m);
     }
 
-    private double distance(Particle selected, Particle particle) {
-        double dx = Math.abs(particle.x - selected.x);
-        double dy = Math.abs(particle.x - selected.x);
-        double distance = Math.sqrt(dx * dx + dy * dy);
-        return Math.max(0, distance - particle.radius - selected.radius);
-    }
-
-    public List<Particle> search(Particle selected, double radius) {
-        List<Particle> neighbors = new ArrayList<Particle>();
-
-        for (Particle particle : particles) {
-            double distance = distance(selected, particle);
-            if (distance <= radius && particle != selected) {
-                neighbors.add(particle);
+    public void search(double radius, Neighbors result) {
+        for (Particle p1 : particles) {
+            for (Particle p2 : particles) {
+                double distance = distance(p1, p2);
+                if (p1 != p2 && distance <= radius) {
+                    result.addNeighbors(p1, p2);
+                }
             }
         }
-
-        return neighbors;
     }
 }
