@@ -1,10 +1,7 @@
 package ar.edu.itba.simul;
 
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CellIndexMethod {
 
@@ -32,6 +29,7 @@ public class CellIndexMethod {
 	// a- Sin condiciones periódicas de contorno (considerando distancia a los
 	// bordes del área: paredes).
 	//
+	@SuppressWarnings("unchecked")
 	private static Result algorithmWithoutBorderPerioricalConditions(Object[][] matrix, List<Particle> particles, double ele, int eme, int radioCell, Particle selected){ // N=particulas.size()
 		long time= System.currentTimeMillis();
 		
@@ -41,31 +39,44 @@ public class CellIndexMethod {
 		int i=getXMatrixPosition(selected);
 		int j=getYMatrixPosition(selected);
 		
-		Map<Integer, Particle> neighboards = new HashMap<Integer, Particle>();
+		List<Particle> neighboards = new ArrayList<Particle>();
 		if(matrix[i][j]!=null){
-			@SuppressWarnings("unchecked")
-			List<Particle> list = (List<Particle>)matrix[i][j];
-
-			for(Particle particle: list){
 				for(int x=-radioCell; x<=radioCell;x++){
 					for(int y=-radioCell; y<=radioCell; y++){
 //						si la coordenada esta dentro del rango de indices de la matriz, evaluar las particulas en esas celdas.
 						if(belongs(i, j, x, y, eme)){
-//									considerar criterios para agregado de particulas con areas, 
-//									se agrega una particula si su centro se encuentra fuera de la zona pero entra por el radio?
-//							vecinos.addAll((List<Particula>)matriz[i+x][j+y]);
+							for(Particle p:(List<Particle>)matrix[x][y]){
+								if(isNeighboard(radioCell, selected, p)){
+									neighboards.add(p);
+								}
+							}
 						}
 					}
 				}
-			}
 					
 		}
 		
 		return new Result(neighboards, System.currentTimeMillis()-time);
 	}
 
-	private static void loadParticlesInMatrix(Object[][] matriz, List<Particle> particulas) {
-		
+	private static boolean isNeighboard(int radioCell, Particle selected, Particle p) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void loadParticlesInMatrix(Object[][] matrix, List<Particle> particles) {
+		for(int i=0; i<matrix.length; i++){
+			for(int j=0; j<matrix.length;j++){
+				matrix[i][j]=new ArrayList<Particle>();
+			}
+		}
+		for(Particle p: particles){
+//			agregar la particula x posicion
+			int x=getXMatrixPosition(p);
+			int y=getYMatrixPosition(p);
+			((List<Particle>)matrix[x][y]).add(p);
+		}
 	}
 
 	private static int getXMatrixPosition(Particle seleccionada) {
@@ -91,7 +102,6 @@ public class CellIndexMethod {
 	public static void main(String[] args) {
 		int eme=20;
 		List<Particle> list=generador(eme);
-		
 		
 		Object[][] matrix=new Object[eme][eme];
 		double ele=0;
