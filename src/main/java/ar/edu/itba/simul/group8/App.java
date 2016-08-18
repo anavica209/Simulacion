@@ -27,7 +27,9 @@ public class App {
         System.out.println("Execution time: " + neighbors.getExecutionTime());
 
         XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
-        exporter.export(particles);
+
+        Particle selected = particles.get(3);
+        exporter.exportWithSelection(particles, selected, neighbors.getNeighbors(selected));
     }
 
     public static List<Particle> generateParticles(int numParticles, double l) {

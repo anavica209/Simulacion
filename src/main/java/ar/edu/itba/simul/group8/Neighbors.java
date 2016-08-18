@@ -10,6 +10,9 @@ public class Neighbors {
     }
 
     public Set<Particle> getNeighbors(Particle particle) {
+        if (!neighbors.containsKey(particle)) {
+            return Collections.emptySet();
+        }
         return Collections.unmodifiableSet(neighbors.get(particle));
     }
 
