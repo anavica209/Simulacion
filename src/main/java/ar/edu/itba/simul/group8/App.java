@@ -8,11 +8,11 @@ import java.util.Random;
 
 public class App {
 
-    private static double MAX_RADIUS = 5.0;
+    private static final double MAX_RADIUS = 2.0;
 
     public static void main(String[] args) throws IOException {
         Random rand = new Random();
-        int numParticles = 100;
+        int numParticles = 200;
         double l = 100;
         int m = 10;
 
@@ -20,7 +20,6 @@ public class App {
 
         NeighborSearch search = new BruteForceSearch(particles, l, m);
 
-        int random = rand.nextInt(particles.size());
         Neighbors neighbors = search.timedSearch(20.0);
 
         System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
@@ -28,14 +27,15 @@ public class App {
 
         XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
 
-        Particle selected = particles.get(3);
+        int random = rand.nextInt(particles.size());
+        Particle selected = particles.get(random);
         exporter.exportWithSelection(particles, selected, neighbors.getNeighbors(selected));
     }
 
     public static List<Particle> generateParticles(int numParticles, double l) {
         Random rand = new Random();
 
-        List<Particle> particles = new ArrayList<Particle>(numParticles);
+        List<Particle> particles = new ArrayList<>(numParticles);
 
         for (int i = 0; i < numParticles; i++) {
             // TODO: make sure we never get the upper boundary

@@ -11,9 +11,9 @@ public class XYZExporter {
 
     private final String filename;
 
-    private static int NORMAL_COLOR = 0;
-    private static int SELECTED_COLOR = 1;
-    private static int NEIGHBOR_COLOR = 2;
+    private static final int NORMAL_COLOR = 0;
+    private static final int SELECTED_COLOR = 1;
+    private static final int NEIGHBOR_COLOR = 2;
 
     XYZExporter(String filename) {
         this.filename = filename;
