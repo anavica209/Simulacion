@@ -1,0 +1,11 @@
+#!/bin/bash
+
+JAR="target/group8-1.0-SNAPSHOT-jar-with-dependencies.jar"
+
+if [ ! -f $JAR ]; then
+  echo -n "Compiling project..."
+  mvn package --quiet > /dev/null 2>&1
+  echo "done."
+fi
+
+exec java -jar $JAR "$@"

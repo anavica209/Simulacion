@@ -1,5 +1,10 @@
 package ar.edu.itba.simul.group8;
 
+import joptsimple.OptionException;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -11,10 +16,25 @@ public class App {
     private static final double MAX_RADIUS = 2.0;
 
     public static void main(String[] args) throws IOException {
+        OptionParser parser = new OptionParser();
+
+        OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(200);
+        OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(100);
+        OptionSpec<Integer> mOpt = parser.accepts("m").withRequiredArg().ofType(Integer.class).defaultsTo(10);
+
+        OptionSet options = null;
+        try {
+            options = parser.parse(args);
+        } catch (OptionException e) {
+            System.err.println("error: " + e.getMessage());
+            System.exit(1);
+        }
+
         Random rand = new Random();
-        int numParticles = 200;
-        double l = 100;
-        int m = 10;
+
+        int numParticles = options.valueOf(nOpt);
+        double l = options.valueOf(lOpt);
+        int m = options.valueOf(mOpt);
 
         List<Particle> particles = generateParticles(numParticles, l);
 
