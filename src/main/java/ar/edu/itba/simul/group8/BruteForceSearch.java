@@ -8,6 +8,7 @@ public class BruteForceSearch extends NeighborSearch {
         super(particles, l, m);
     }
 
+    @Override
     public void search(double radius, Neighbors result) {
         for (Particle p1 : particles) {
             for (Particle p2 : particles) {

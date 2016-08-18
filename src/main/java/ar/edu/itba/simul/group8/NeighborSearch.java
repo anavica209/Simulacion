@@ -30,6 +30,8 @@ public abstract class NeighborSearch {
     }
 
     public Neighbors timedSearch(double radius) {
+        init();
+
         long start = System.nanoTime();
 
         Neighbors result = new Neighbors();
@@ -40,6 +42,9 @@ public abstract class NeighborSearch {
         result.setExecutionTime(end - start);
 
         return result;
+    }
+
+    public void init() {
     }
 
     public abstract void search(double radius, Neighbors result);

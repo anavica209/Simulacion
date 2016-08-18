@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CellIndexSearchTest {
 
@@ -42,5 +43,6 @@ public class CellIndexSearchTest {
         Set<Pair<Particle, Particle>> neighbors = n2.getNeighborPairs();
 
         assertEquals(expected, neighbors);
+        assertTrue(n1.getExecutionTime() < n2.getExecutionTime());
     }
 }
