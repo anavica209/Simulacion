@@ -1,12 +1,14 @@
 package ar.edu.itba.simul.group8;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class App {
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) throws IOException {
         Random rand = new Random();
         int numParticles = 10;
         double l = 100;
@@ -21,6 +23,9 @@ public class App {
 
         System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
         System.out.println("Execution time: " + neighbors.getExecutionTime());
+
+        XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
+        exporter.export(particles);
     }
 
     public static List<Particle> generateParticles(int numParticles, double l) {
