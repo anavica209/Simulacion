@@ -8,9 +8,11 @@ import java.util.Random;
 
 public class App {
 
+    private static double MAX_RADIUS = 5.0;
+
     public static void main(String[] args) throws IOException {
         Random rand = new Random();
-        int numParticles = 10;
+        int numParticles = 20;
         double l = 100;
         int m = 10;
 
@@ -37,7 +39,7 @@ public class App {
             // TODO: make sure we never get the upper boundary
             double x = rand.nextDouble() * l;
             double y = rand.nextDouble() * l;
-            double radius = rand.nextDouble() * 10;
+            double radius = rand.nextDouble() * MAX_RADIUS;
             particles.add(new Particle(x, y, radius));
         }
 
