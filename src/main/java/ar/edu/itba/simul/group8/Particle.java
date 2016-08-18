@@ -18,4 +18,19 @@ public class Particle {
     public String toString() {
         return "P(" + id + ")";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Particle particle = (Particle) o;
+
+        return id == particle.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }
