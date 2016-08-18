@@ -12,7 +12,7 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         Random rand = new Random();
-        int numParticles = 20;
+        int numParticles = 100;
         double l = 100;
         int m = 10;
 
@@ -21,7 +21,7 @@ public class App {
         NeighborSearch search = new BruteForceSearch(particles, l, m);
 
         int random = rand.nextInt(particles.size());
-        Neighbors neighbors = search.timedSearch(10.0);
+        Neighbors neighbors = search.timedSearch(20.0);
 
         System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
         System.out.println("Execution time: " + neighbors.getExecutionTime());
@@ -42,7 +42,7 @@ public class App {
             double x = rand.nextDouble() * l;
             double y = rand.nextDouble() * l;
             double radius = rand.nextDouble() * MAX_RADIUS;
-            particles.add(new Particle(x, y, radius));
+            particles.add(new Particle(i + 1, x, y, radius));
         }
 
         return particles;
