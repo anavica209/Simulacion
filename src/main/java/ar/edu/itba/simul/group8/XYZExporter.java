@@ -1,5 +1,6 @@
 package ar.edu.itba.simul.group8;
 
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,9 +12,9 @@ public class XYZExporter {
 
     private final String filename;
 
-    private static final int NORMAL_COLOR = 0;
-    private static final int SELECTED_COLOR = 1;
-    private static final int NEIGHBOR_COLOR = 2;
+    private static final Color NORMAL_COLOR = Color.blue;
+    private static final Color SELECTED_COLOR = Color.green;
+    private static final Color NEIGHBOR_COLOR = Color.red;
 
     XYZExporter(String filename) {
         this.filename = filename;
@@ -23,7 +24,7 @@ public class XYZExporter {
         Writer w = new BufferedWriter(new FileWriter(filename));
 
         w.write(String.format("%d\n", particles.size()));
-        w.write("Particles\n");
+        w.write("Particles (x, y, radius, r, g, b)\n");
 
         for (Particle p : particles) {
             writeParticle(w, p);
@@ -36,7 +37,7 @@ public class XYZExporter {
         Writer w = new BufferedWriter(new FileWriter(filename));
 
         w.write(String.format("%d\n", particles.size()));
-        w.write("Particles\n");
+        w.write("Particles (x, y, radius, r, g, b)\n");
 
         for (Particle p : particles) {
             writeParticleWithSelection(w, p, selection, neighbors);
@@ -51,11 +52,11 @@ public class XYZExporter {
 
     void writeParticleWithSelection(Writer writer, Particle particle, Particle selection, Set<Particle> neighbors) throws IOException {
         if (particle == selection) {
-            writer.write(String.format("%f\t%f\t%f\t%d\n", particle.x, particle.y, particle.radius, SELECTED_COLOR));
+            writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", particle.x, particle.y, particle.radius, SELECTED_COLOR.getRed(), SELECTED_COLOR.getGreen(), SELECTED_COLOR.getBlue() ));
         } else if (neighbors.contains(particle)) {
-            writer.write(String.format("%f\t%f\t%f\t%d\n", particle.x, particle.y, particle.radius, NEIGHBOR_COLOR));
+            writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", particle.x, particle.y, particle.radius, NEIGHBOR_COLOR.getRed(), NEIGHBOR_COLOR.getGreen(), NEIGHBOR_COLOR.getBlue()));
         } else {
-            writer.write(String.format("%f\t%f\t%f\t%d\n", particle.x, particle.y, particle.radius, NORMAL_COLOR));
+            writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", particle.x, particle.y, particle.radius, NORMAL_COLOR.getRed(), NORMAL_COLOR.getGreen(), NORMAL_COLOR.getBlue()));
         }
     }
 }
