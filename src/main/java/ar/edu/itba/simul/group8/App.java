@@ -148,7 +148,7 @@ public class App {
 	public static List<Particle> generateParticles(int numParticles, double l, Double fixedRadius) {
 		Random rand = new Random();
 
-		List<Particle> particles = new ArrayList<>(numParticles);
+		List<Particle> particles = new ArrayList<Particle>(numParticles);
 
 		for (int i = 0; i < numParticles; i++) {
 			// TODO: make sure we never get the upper boundary

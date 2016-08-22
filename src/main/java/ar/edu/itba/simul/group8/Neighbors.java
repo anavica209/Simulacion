@@ -3,7 +3,7 @@ package ar.edu.itba.simul.group8;
 import java.util.*;
 
 public class Neighbors {
-    private final Map<Particle, Set<Particle>> neighbors = new HashMap<>();
+    private final Map<Particle, Set<Particle>> neighbors = new HashMap<Particle, Set<Particle>>();
     private long executionTime;
 
     Neighbors() {
@@ -21,11 +21,11 @@ public class Neighbors {
     }
 
     public Set<Pair<Particle, Particle>> getNeighborPairs() {
-        Set<Pair<Particle, Particle>> set = new HashSet<>();
+        Set<Pair<Particle, Particle>> set = new HashSet<Pair<Particle, Particle>>();
 
         for (Map.Entry<Particle, Set<Particle>> entry : neighbors.entrySet()) {
             for (Particle particle : entry.getValue()) {
-                set.add(new Pair<>(entry.getKey(), particle));
+                set.add(new Pair<Particle, Particle>(entry.getKey(), particle));
             }
         }
 
@@ -40,7 +40,7 @@ public class Neighbors {
     private void addNeighbor(Particle p1, Particle p2) {
         Set<Particle> set = neighbors.get(p1);
         if (set == null) {
-            set = new HashSet<>();
+            set = new HashSet<Particle>();
             neighbors.put(p1, set);
         }
         set.add(p2);

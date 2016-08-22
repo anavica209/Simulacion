@@ -199,11 +199,11 @@ public class CellIndexSearchCPC extends NeighborSearch {
 	
 
 	private Matrix<List<Particle>> getMatrixFromParticles(List<Particle> particles) {
-		Matrix<List<Particle>> matrix = new Matrix<>(m, m);
+		Matrix<List<Particle>> matrix = new Matrix<List<Particle>>(m, m);
 
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < m; j++) {
-				matrix.put(i, j, new ArrayList<>());
+				matrix.put(i, j, new ArrayList<Particle>());
 			}
 		}
 

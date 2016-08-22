@@ -13,7 +13,7 @@ public class Matrix<T> {
     public Matrix(int xmax, int ymax) {
         this.xmax = xmax;
         this.ymax = ymax;
-        content = new ArrayList<>(xmax * ymax);
+        content = new ArrayList<T>(xmax * ymax);
 
         // Initialize list with null
         for (int i = 0; i < xmax * ymax; i++) {
