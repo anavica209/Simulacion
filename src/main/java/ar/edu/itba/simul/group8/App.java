@@ -34,6 +34,8 @@ public class App {
 		OptionSpec<Boolean> generateOvitoOpt = parser.accepts("ovito").withRequiredArg().ofType(Boolean.class)
 				.defaultsTo(true);
         OptionSpec<Boolean> statsOpt = parser.accepts("stats").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
+		OptionSpec<Boolean> optimumCellsOpt = parser.accepts("optimumCells").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
+		OptionSpec<Boolean> efficiencyOpt = parser.accepts("efficiency").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
 
 		OptionSet options = null;
 		try {
@@ -54,6 +56,8 @@ public class App {
 		int searchType = options.valueOf(searchOpt);
 		boolean generateOvito = options.valueOf(generateOvitoOpt);
 		boolean stats = options.valueOf(statsOpt);
+		boolean optimumCells = options.valueOf(optimumCellsOpt);
+		boolean efficiency = options.valueOf(efficiencyOpt);
 
 		if (stats) {
 			for (double lindex = lstart; lindex <= l;) {
@@ -62,7 +66,7 @@ public class App {
 
 				for (int i = 0; i < ntimes; i++) {
 
-					List<Particle> particles = generateParticles(numParticles, lindex);
+					List<Particle> particles = generateParticles(numParticles, lindex, null);
 					Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, lindex, m);
 					sumTime += neighbors.getExecutionTime();
 
@@ -80,13 +84,50 @@ public class App {
 
 				lindex += linc;
 			}
+		} else if (optimumCells) {
+
+			runOptimumCells(20, 1, 0.25);
+
+		} else if (efficiency) {
+
+			runEfficiency(20, 1, 0.25);
+
 		} else {
-			List<Particle> particles = generateParticles(numParticles, l);
+			List<Particle> particles = generateParticles(numParticles, l, null);
 		    Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m);
 
 			System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
 			System.out.println("Execution time: " + neighbors.getExecutionTime());
 		}
+	}
+
+	private static void runEfficiency(int l, double radius, double particleRadius) {
+
+		for (int n = 100; n < 200; n += 10) {
+			for (int m = 10; m < 20; m++) {
+				List<Particle> particles = generateParticles(100, l, particleRadius);
+				Neighbors neighbors = runAlgorithm(particles, CIM, n, l, m);
+				long time = neighbors.getExecutionTime();
+
+				neighbors = runAlgorithm(particles, BRUTE_FORCE, n, l, m);
+				long bruteForceTime = neighbors.getExecutionTime();
+
+				System.out.println(String.format("%d;%d;%d;%d", n, m * m, time, bruteForceTime));
+			}
+		}
+	}
+	private static void runOptimumCells(int l, double radius, double particleRadius) {
+
+		for (int n = 100; n < 200; n += 10) {
+			for (int m = 10; m < 20; m++) {
+				List<Particle> particles = generateParticles(100, l, particleRadius);
+				Neighbors neighbors = runAlgorithm(particles, CIM, n, l, m);
+				long time = neighbors.getExecutionTime();
+				double density = ((double) n) / (l * l);
+
+				System.out.println(String.format("%d;%d;%f;%d", n, m * m, density, time));
+			}
+        }
 	}
 
 	public static Neighbors runAlgorithm(List<Particle> particles, int searchType, int numParticles, double lindex, int m) {
@@ -104,7 +145,7 @@ public class App {
 		return search.timedSearch(20.0);
 	}
 
-	public static List<Particle> generateParticles(int numParticles, double l) {
+	public static List<Particle> generateParticles(int numParticles, double l, Double fixedRadius) {
 		Random rand = new Random();
 
 		List<Particle> particles = new ArrayList<>(numParticles);
@@ -113,7 +154,7 @@ public class App {
 			// TODO: make sure we never get the upper boundary
 			double x = rand.nextDouble() * l;
 			double y = rand.nextDouble() * l;
-			double radius = rand.nextDouble() * MAX_RADIUS;
+			double radius = (fixedRadius != null) ? fixedRadius : rand.nextDouble() * MAX_RADIUS;
 			particles.add(new Particle(i + 1, x, y, radius));
 		}
 
