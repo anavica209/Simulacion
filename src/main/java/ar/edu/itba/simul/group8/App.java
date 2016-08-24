@@ -6,6 +6,7 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,13 @@ public class App {
         OptionSpec<Boolean> statsOpt = parser.accepts("stats").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
 		OptionSpec<Boolean> optimumCellsOpt = parser.accepts("optimumCells").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
 		OptionSpec<Boolean> efficiencyOpt = parser.accepts("efficiency").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
+		
+		OptionSpec<Boolean> offLatticeOpt = parser.accepts("offLattice").withRequiredArg().ofType(Boolean.class).defaultsTo(true);
+		OptionSpec<Double> modVelocityOpt = parser.accepts("modVelocity").withRequiredArg().ofType(Double.class).defaultsTo(0.03);
+		OptionSpec<Long> timeOpt = parser.accepts("time").withRequiredArg().ofType(Long.class).defaultsTo(500L);
+		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(0.01);
 
+		
 		OptionSet options = null;
 		try {
 			options = parser.parse(args);
@@ -58,6 +65,11 @@ public class App {
 		boolean stats = options.valueOf(statsOpt);
 		boolean optimumCells = options.valueOf(optimumCellsOpt);
 		boolean efficiency = options.valueOf(efficiencyOpt);
+		boolean offLattice = options.valueOf(offLatticeOpt);
+
+		double modVelocity = options.valueOf(modVelocityOpt);
+		long time = options.valueOf(timeOpt);
+		double noise = options.valueOf(noiseOpt);
 
 		if (stats) {
 			for (double lindex = lstart; lindex <= l;) {
@@ -92,7 +104,25 @@ public class App {
 
 			runEfficiency(20, 1, 0.25);
 
-		} else {
+		} else if(offLattice){
+			
+			
+			List<Particle> particles = generateParticles(numParticles, l, null);
+		    
+			XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
+			OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, noise, rand);
+			
+			Writer writer=exporter.startLattice();
+			for(long t=0; t<time; t++){
+				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m);
+				offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
+				particles=offLatticeImpl.reposicionarParticulas();
+				
+				exporter.exportOffLattice(writer, particles, t);
+			}
+			writer.close();
+
+		}else{
 			List<Particle> particles = generateParticles(numParticles, l, null);
 		    Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m);
 

@@ -16,7 +16,7 @@ public class CellIndexSearchTest {
     private static final double MAX_RADIUS = 2.0;
 
     private List<Particle> generateParticles(int num) {
-        List<Particle> particles = new ArrayList<>(num);
+        List<Particle> particles = new ArrayList<Particle>(num);
 
         Random rand = new Random();
 

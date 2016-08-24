@@ -54,4 +54,19 @@ public class XYZExporter {
             writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", particle.x, particle.y, particle.radius, 255, 0, 0));
         }
     }
+
+//    https://en.wikipedia.org/wiki/XYZ_file_format
+	public void exportOffLattice(Writer writer, List<Particle> particles, long t) throws IOException {
+		writer.write(String.format("%d\n", particles.size()));
+        writer.write("Particles (x, y, radius, r, g, b)  at "+t+"\n");
+
+        for (Particle p : particles) {
+        	writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", p.x, p.y, p.radius, 255, 0, 0));
+        }
+	}
+
+	public Writer startLattice() throws IOException {
+		 return new BufferedWriter(new FileWriter(filename));
+
+	}
 }
