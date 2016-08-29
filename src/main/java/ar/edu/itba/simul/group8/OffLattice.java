@@ -32,21 +32,26 @@ public class OffLattice {
 	public void calcularVelocidades(Map<Particle, Set<Particle>> allNeighbors) {
 		HashMap<Particle, Double> bm = new HashMap<Particle, Double>();
 
-		double degressNoise = rand.nextDouble() * (noise) - noise / 2;
+		double degressNoise = rand.nextDouble() * (noise) - noise / 2.0;
 		for (Particle p : birdMap.keySet()) {
 			Set<Particle> neighbors = allNeighbors.get(p);
 			double sumSin = 0;
 			double sumCos = 0;
+			sumSin += Math.sin(birdMap.get(p));
+			sumCos += Math.cos(birdMap.get(p));
 			if (neighbors != null) {
 				for (Particle n : neighbors) {
 					sumSin += Math.sin(birdMap.get(n));
 					sumCos += Math.cos(birdMap.get(n));
 				}
-				double radians = Math.atan(((double) sumSin / neighbors.size()) / ((double) sumCos / neighbors.size()));
+			
+				double radians = Math.atan(((double) sumSin / (neighbors.size()+1)) / ((double) sumCos / (neighbors.size()+1)));
 				// double degressNoise=0;
 				bm.put(p, Math.toRadians(Math.toDegrees(radians) + degressNoise));
 			} else {
-				bm.put(p, Math.toRadians(0+degressNoise));
+				double radians = Math.atan( ((double) sumSin) / ((double) sumCos));
+				
+				bm.put(p, Math.toRadians(Math.toDegrees(radians) + degressNoise));
 			}
 			// System.out.println(radians);
 		}
@@ -56,13 +61,11 @@ public class OffLattice {
 	public List<Particle> reposicionarParticulas(double l, long time) {
 		List<Particle> particles = new ArrayList<Particle>();
 		for (Particle p : birdMap.keySet()) {
-			// System.out.println(
-			// "x: " + modVelocity * Math.cos(birdMap.get(p))*time + " y: " +
-			// modVelocity * Math.sin(birdMap.get(p))*time);
+			
 			double x = repositionAxis(p.x + modVelocity * Math.cos(birdMap.get(p)) * time, l);
 			double y = repositionAxis(p.y + modVelocity * Math.sin(birdMap.get(p)) * time, l);
 
-			// System.out.println(x+", "+y);
+			 System.out.println(p.x + "  "+ p.y+ "    "+x+", "+y);
 			particles.add(new Particle(p.id, x, y, p.radius));
 		}
 		return particles;

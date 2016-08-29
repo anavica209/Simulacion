@@ -23,8 +23,8 @@ public class App {
 	public static void main(String[] args) throws IOException {
 		OptionParser parser = new OptionParser();
 
-		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(100);
-		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(100);
+		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(1);
+		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(25);
 		OptionSpec<Integer> mOpt = parser.accepts("m").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> ntimesOpt = parser.accepts("ntimes").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> lincOpt = parser.accepts("linc").withRequiredArg().ofType(Integer.class).defaultsTo(10);
@@ -41,7 +41,7 @@ public class App {
 		OptionSpec<Boolean> offLatticeOpt = parser.accepts("offLattice").withRequiredArg().ofType(Boolean.class).defaultsTo(true);
 		OptionSpec<Double> modVelocityOpt = parser.accepts("modVelocity").withRequiredArg().ofType(Double.class).defaultsTo(0.03);
 		OptionSpec<Long> timeOpt = parser.accepts("time").withRequiredArg().ofType(Long.class).defaultsTo(500L);
-		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(0.01);
+		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(0.0);
 
 		
 		OptionSet options = null;
@@ -114,7 +114,7 @@ public class App {
 			
 			Writer writer=exporter.startLattice();
 			for(long t=0; t<time; t++){
-				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, l/m*3);
+				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 2);
 				offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
 				particles=offLatticeImpl.reposicionarParticulas(l, t);
 				
@@ -182,8 +182,8 @@ public class App {
 
 		for (int i = 0; i < numParticles; i++) {
 			// TODO: make sure we never get the upper boundary
-			double x = rand.nextDouble() * l;
-			double y = rand.nextDouble() * l;
+			double x = rand.nextDouble() * l-0.001;
+			double y = rand.nextDouble() * l-0.001;
 			double radius = (fixedRadius != null) ? fixedRadius : rand.nextDouble() * MAX_RADIUS;
 			particles.add(new Particle(i + 1, x, y, radius));
 		}
