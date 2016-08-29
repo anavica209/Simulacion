@@ -208,9 +208,11 @@ public class CellIndexSearchCPC extends NeighborSearch {
 		}
 
 		for (Particle p : particles) {
-			int x = (int) (p.x / (l / m));
-			int y = (int) (p.y / (l / m));
-
+			int x = (int) (p.x %(int)(l / m));
+			int y = (int) (p.y % (int)(l / m));
+			
+//			System.out.println(x+"  "+y+"   "+(l / m));
+			
 			List<Particle> cell = matrix.get(x, y);
 			cell.add(p);
 		}

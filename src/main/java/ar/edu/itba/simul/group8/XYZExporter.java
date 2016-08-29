@@ -61,7 +61,7 @@ public class XYZExporter {
         writer.write("Particles (x, y, radius, r, g, b)  at "+t+"\n");
 
         for (Particle p : particles) {
-        	writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", p.x, p.y, p.radius, 255, 0, 0));
+        	writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", p.x, p.y, 0.5, 255, 0, 0));
         }
 	}
 
@@ -69,4 +69,5 @@ public class XYZExporter {
 		 return new BufferedWriter(new FileWriter(filename));
 
 	}
+
 }

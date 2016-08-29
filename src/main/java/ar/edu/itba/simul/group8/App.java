@@ -23,7 +23,7 @@ public class App {
 	public static void main(String[] args) throws IOException {
 		OptionParser parser = new OptionParser();
 
-		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(200);
+		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(100);
 		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(100);
 		OptionSpec<Integer> mOpt = parser.accepts("m").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> ntimesOpt = parser.accepts("ntimes").withRequiredArg().ofType(Integer.class).defaultsTo(10);
@@ -79,7 +79,7 @@ public class App {
 				for (int i = 0; i < ntimes; i++) {
 
 					List<Particle> particles = generateParticles(numParticles, lindex, null);
-					Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, lindex, m);
+					Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, lindex, m, 20.0);
 					sumTime += neighbors.getExecutionTime();
 
 					if (generateOvito) {
@@ -107,16 +107,16 @@ public class App {
 		} else if(offLattice){
 			
 			
-			List<Particle> particles = generateParticles(numParticles, l, null);
+			List<Particle> particles = generateParticles(numParticles, l, 0.0);
 		    
 			XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
 			OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, noise, rand);
 			
 			Writer writer=exporter.startLattice();
 			for(long t=0; t<time; t++){
-				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m);
+				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, l/m*3);
 				offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
-				particles=offLatticeImpl.reposicionarParticulas();
+				particles=offLatticeImpl.reposicionarParticulas(l, t);
 				
 				exporter.exportOffLattice(writer, particles, t);
 			}
@@ -124,7 +124,7 @@ public class App {
 
 		}else{
 			List<Particle> particles = generateParticles(numParticles, l, null);
-		    Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m);
+		    Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 20.0);
 
 			System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
 			System.out.println("Execution time: " + neighbors.getExecutionTime());
@@ -136,10 +136,10 @@ public class App {
 		for (int n = 100; n < 200; n += 10) {
 			for (int m = 10; m < 20; m++) {
 				List<Particle> particles = generateParticles(100, l, particleRadius);
-				Neighbors neighbors = runAlgorithm(particles, CIM, n, l, m);
+				Neighbors neighbors = runAlgorithm(particles, CIM, n, l, m, 20.0);
 				long time = neighbors.getExecutionTime();
 
-				neighbors = runAlgorithm(particles, BRUTE_FORCE, n, l, m);
+				neighbors = runAlgorithm(particles, BRUTE_FORCE, n, l, m, 20.0);
 				long bruteForceTime = neighbors.getExecutionTime();
 
 				System.out.println(String.format("%d;%d;%d;%d", n, m * m, time, bruteForceTime));
@@ -151,7 +151,7 @@ public class App {
 		for (int n = 100; n < 200; n += 10) {
 			for (int m = 10; m < 20; m++) {
 				List<Particle> particles = generateParticles(100, l, particleRadius);
-				Neighbors neighbors = runAlgorithm(particles, CIM, n, l, m);
+				Neighbors neighbors = runAlgorithm(particles, CIM, n, l, m, 20.0);
 				long time = neighbors.getExecutionTime();
 				double density = ((double) n) / (l * l);
 
@@ -160,7 +160,7 @@ public class App {
         }
 	}
 
-	public static Neighbors runAlgorithm(List<Particle> particles, int searchType, int numParticles, double lindex, int m) {
+	public static Neighbors runAlgorithm(List<Particle> particles, int searchType, int numParticles, double lindex, int m, double radious) {
 		NeighborSearch search;
 		switch (searchType) {
 			case BRUTE_FORCE:
@@ -172,7 +172,7 @@ public class App {
 				search = new CellIndexSearchCPC(particles, lindex, m);
 		}
 
-		return search.timedSearch(20.0);
+		return search.timedSearch(radious);
 	}
 
 	public static List<Particle> generateParticles(int numParticles, double l, Double fixedRadius) {
