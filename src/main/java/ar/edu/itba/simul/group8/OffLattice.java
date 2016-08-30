@@ -13,10 +13,11 @@ public class OffLattice {
 	private double noise;
 	private Random rand;
 	private Map<Particle, Double> birdMap;
+	private List<Point> va=new ArrayList<Point>();
 
 	public OffLattice(List<Particle> particles, double modVelocity, double noise, Random rand) {
 		this.modVelocity = modVelocity;
-		this.noise = 40;
+		this.noise = noise * 180 / Math.PI;
 		this.rand = rand;
 
 		initializeVelocities(particles);
@@ -32,8 +33,10 @@ public class OffLattice {
 	public void calcularVelocidades(Map<Particle, Set<Particle>> allNeighbors) {
 		HashMap<Particle, Double> bm = new HashMap<Particle, Double>();
 
-		double degressNoise = rand.nextDouble() * (noise) - noise / 2.0;
+		va=new ArrayList<Point>();
 		for (Particle p : birdMap.keySet()) {
+			double degressNoise = rand.nextDouble() * (noise) - noise / 2.0;
+			
 			Set<Particle> neighbors = allNeighbors.get(p);
 			double sumSin = 0;
 			double sumCos = 0;
@@ -54,19 +57,19 @@ public class OffLattice {
 				bm.put(p, Math.toRadians(Math.toDegrees(radians) + degressNoise));
 			}
 			
-			double rad = birdMap.get(p);
-			p.avg = p.id;
-			if (neighbors != null) {
-//				System.out.println("R: " + rad);
-				for (Particle n : neighbors) {
-					rad += birdMap.get(n);
-					p.avg += n.id;
-				}
+//			double rad = birdMap.get(p);
+//			p.avg = p.id;
+//			if (neighbors != null) {
+////				System.out.println("R: " + rad);
+//				for (Particle n : neighbors) {
+//					rad += birdMap.get(n);
+//					p.avg += n.id;
 //				}
-				rad = rad / (neighbors.size() + 1);
-//				System.out.println("R-: " + rad);
-				p.avg = p.avg / (neighbors.size() + 1);
-			}
+////				}
+//				rad = rad / (neighbors.size() + 1);
+////				System.out.println("R-: " + rad);
+//				p.avg = p.avg / (neighbors.size() + 1);
+//			}
 			
 //			bm.put(p, rad);
 			// System.out.println(radians);
@@ -83,16 +86,27 @@ public class OffLattice {
 
 			//System.out.println(p.x + "  "+ p.y+ "    "+x+", "+y + " l: " + l);
 			//System.out.flush();
+			
+//			va.add(new Point(modVelocity * Math.cos(birdMap.get(p)), modVelocity * Math.sin(birdMap.get(p))));
 			p.x = x;
 			p.y = y;
+			
 			
 			particles.add(p);
 		}
 		return particles;
 	}
 
-	public Map<Particle, Double> getBirdMap() {
-		return birdMap;
+	public double getVa() {
+		double x = 0;
+		double y = 0;
+		
+		for (Particle p : birdMap.keySet()) {
+			
+			x += modVelocity * Math.cos(birdMap.get(p));
+			y += modVelocity * Math.sin(birdMap.get(p));
+		}
+		return Math.sqrt(x*x+y*y)/(modVelocity*birdMap.size());
 	}
 	
 	// If particle is out of limits, relocate it.
@@ -104,4 +118,12 @@ public class OffLattice {
 		return d;
 	}
 
+	
+	private class Point {
+		double x,y;
+		public Point(double x, double y) {
+			this.x=x;
+			this.y=y;
+		}
+	}
 }

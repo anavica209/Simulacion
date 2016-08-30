@@ -23,9 +23,9 @@ public class App {
 	public static void main(String[] args) throws IOException {
 		OptionParser parser = new OptionParser();
 
-		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(5);
-		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(100);
-		OptionSpec<Integer> mOpt = parser.accepts("m").withRequiredArg().ofType(Integer.class).defaultsTo(20);
+		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(1000);
+		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(50);
+		OptionSpec<Integer> mOpt = parser.accepts("m").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> ntimesOpt = parser.accepts("ntimes").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> lincOpt = parser.accepts("linc").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> lstartOpt = parser.accepts("lstart").withRequiredArg().ofType(Integer.class).defaultsTo(10);
@@ -40,8 +40,8 @@ public class App {
 		
 		OptionSpec<Boolean> offLatticeOpt = parser.accepts("offLattice").withRequiredArg().ofType(Boolean.class).defaultsTo(true);
 		OptionSpec<Double> modVelocityOpt = parser.accepts("modVelocity").withRequiredArg().ofType(Double.class).defaultsTo(0.03);
-		OptionSpec<Long> timeOpt = parser.accepts("time").withRequiredArg().ofType(Long.class).defaultsTo(100000L);
-		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(5.0);
+		OptionSpec<Long> timeOpt = parser.accepts("time").withRequiredArg().ofType(Long.class).defaultsTo(500L);
+		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(0.0);
 
 		
 		OptionSet options = null;
@@ -114,15 +114,18 @@ public class App {
 			OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, noise, rand);
 			
 			Writer writer=exporter.startLattice();
+			System.out.println("Va:" + offLatticeImpl.getVa());
 			for(long t=0; t<time; t++){
-				System.out.println("t: " + (time - t));
-				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 5);
+//				System.out.println("t: " + (time - t));
+				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 1);
 				offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
 				particles=offLatticeImpl.reposicionarParticulas(l, 1);
 				
 				exporter.exportOffLattice(writer, particles, t);
 			}
 			writer.close();
+			
+			System.out.println("Va-:" + offLatticeImpl.getVa());
 
 		}else{
 			List<Particle> particles = generateParticles(numParticles, l, null);
