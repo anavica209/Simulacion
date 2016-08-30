@@ -20,10 +20,12 @@ public class CellIndexSearchCPC extends NeighborSearch {
 	public void search(double radius, Neighbors result) {
 		for (Particle particle : particles) {
 			debug("Searching for neighbors of particle (%f; %f) within radius %f", particle.x, particle.y, radius);
+			
+			int div = (int) (l / m);
 
-			int x = (int) (particle.x / m);
-			int y = (int) (particle.y / m);
-			int d = (int) Math.ceil(radius / m);
+			int x = (int) (particle.x / div);
+			int y = (int) (particle.y / div);
+			int d = (int) Math.ceil(radius / div);
 
 			debug("Particle is in block (%d, %d)", x, y);
 
@@ -208,10 +210,11 @@ public class CellIndexSearchCPC extends NeighborSearch {
 		}
 
 		for (Particle p : particles) {
-			int x = (int) (p.x /(l / m));
+			int x = (int) (p.x /(l / m*1.0));
 			int y = (int) (p.y / (l / (m*1.0)));
 			
-			System.out.println(x+"  "+y+"   "+(l / m));
+//			System.out.println(x+"  "+y+"   "+(l / m));
+//			System.out.flush();
 			
 			List<Particle> cell = matrix.get(x, y);
 			cell.add(p);

@@ -44,7 +44,7 @@ public class Matrix<T> {
     }
 
     public void checkBoundaries(int x, int y) {
-        if (x < 0 || x > xmax || y < 0 || y > ymax) {
+        if (x < 0 || x >= xmax || y < 0 || y >= ymax) {
             throw new IndexOutOfBoundsException();
         }
     }

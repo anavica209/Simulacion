@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class XYZExporter {
@@ -56,12 +57,12 @@ public class XYZExporter {
     }
 
 //    https://en.wikipedia.org/wiki/XYZ_file_format
-	public void exportOffLattice(Writer writer, List<Particle> particles, long t) throws IOException {
+	public void exportOffLattice(Writer writer, List<Particle> particles,  long t) throws IOException {
 		writer.write(String.format("%d\n", particles.size()));
         writer.write("Particles (x, y, radius, r, g, b)  at "+t+"\n");
-
+        
         for (Particle p : particles) {
-        	writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", p.x, p.y, 0.5, 255, 0, 0).replace(',', '.'));
+        	writer.write(String.format("%f\t%f\t%f\t%d\t%d\t%d\n", p.x, p.y, 2.5, 255, (int) (p.id * 255.0 / 20), (int)(p.avg * 255.0 / 20)).replace(',', '.'));
         }
 	}
 

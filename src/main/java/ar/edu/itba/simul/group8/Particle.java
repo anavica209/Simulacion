@@ -3,9 +3,10 @@ package ar.edu.itba.simul.group8;
 public class Particle {
 
     public final int id;
-    public final double x;
-    public final double y;
-    public final double radius;
+    public double x;
+    public double y;
+    public double radius;
+    public double avg;
 
     public Particle(int id, double x, double y, double radius) {
         this.id = id;

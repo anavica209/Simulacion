@@ -16,7 +16,7 @@ public class OffLattice {
 
 	public OffLattice(List<Particle> particles, double modVelocity, double noise, Random rand) {
 		this.modVelocity = modVelocity;
-		this.noise = noise;
+		this.noise = 40;
 		this.rand = rand;
 
 		initializeVelocities(particles);
@@ -49,10 +49,26 @@ public class OffLattice {
 				// double degressNoise=0;
 				bm.put(p, Math.toRadians(Math.toDegrees(radians) + degressNoise));
 			} else {
-				double radians = Math.atan( ((double) sumSin) / ((double) sumCos));
+				double 	radians = Math.atan( ((double) sumSin) / ((double) sumCos));
 				
 				bm.put(p, Math.toRadians(Math.toDegrees(radians) + degressNoise));
 			}
+			
+			double rad = birdMap.get(p);
+			p.avg = p.id;
+			if (neighbors != null) {
+//				System.out.println("R: " + rad);
+				for (Particle n : neighbors) {
+					rad += birdMap.get(n);
+					p.avg += n.id;
+				}
+//				}
+				rad = rad / (neighbors.size() + 1);
+//				System.out.println("R-: " + rad);
+				p.avg = p.avg / (neighbors.size() + 1);
+			}
+			
+//			bm.put(p, rad);
 			// System.out.println(radians);
 		}
 		birdMap = bm;
@@ -65,18 +81,26 @@ public class OffLattice {
 			double x = repositionAxis(p.x + modVelocity * Math.cos(birdMap.get(p)) * time, l);
 			double y = repositionAxis(p.y + modVelocity * Math.sin(birdMap.get(p)) * time, l);
 
-			 System.out.println(p.x + "  "+ p.y+ "    "+x+", "+y);
-			particles.add(new Particle(p.id, x, y, p.radius));
+			//System.out.println(p.x + "  "+ p.y+ "    "+x+", "+y + " l: " + l);
+			//System.out.flush();
+			p.x = x;
+			p.y = y;
+			
+			particles.add(p);
 		}
 		return particles;
 	}
 
+	public Map<Particle, Double> getBirdMap() {
+		return birdMap;
+	}
+	
 	// If particle is out of limits, relocate it.
 	private double repositionAxis(double d, double l) {
-		if (d < 0)
-			return l - d;
-		if (d > l)
-			return d - l;
+		while (d < 0)
+			d += l;
+		while (d >= l)
+			d -= l;
 		return d;
 	}
 
