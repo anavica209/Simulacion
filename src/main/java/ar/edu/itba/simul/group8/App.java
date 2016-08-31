@@ -19,12 +19,16 @@ public class App {
 	private static final int BRUTE_FORCE = 0;
 	private static final int CIM = 1;
 	private static final int CIMCPC = 2;
-
+	
+	private static final int OLNOISE = 1;
+	private static final int OLDENSITY = 2;
+	private static final int OLNONE = 0;
+	
 	public static void main(String[] args) throws IOException {
 		OptionParser parser = new OptionParser();
 
-		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(1000);
-		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(50);
+		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(2000);
+		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(20);
 		OptionSpec<Integer> mOpt = parser.accepts("m").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> ntimesOpt = parser.accepts("ntimes").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> lincOpt = parser.accepts("linc").withRequiredArg().ofType(Integer.class).defaultsTo(10);
@@ -38,11 +42,14 @@ public class App {
 		OptionSpec<Boolean> optimumCellsOpt = parser.accepts("optimumCells").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
 		OptionSpec<Boolean> efficiencyOpt = parser.accepts("efficiency").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
 		
+//		---off lattice
 		OptionSpec<Boolean> offLatticeOpt = parser.accepts("offLattice").withRequiredArg().ofType(Boolean.class).defaultsTo(true);
+		OptionSpec<Integer> optionOpt = parser.accepts("option").withRequiredArg().ofType(Integer.class).defaultsTo(OLDENSITY);
+		
 		OptionSpec<Double> modVelocityOpt = parser.accepts("modVelocity").withRequiredArg().ofType(Double.class).defaultsTo(0.03);
 		OptionSpec<Long> timeOpt = parser.accepts("time").withRequiredArg().ofType(Long.class).defaultsTo(500L);
-		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(0.0);
-
+		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(2.0);
+		OptionSpec<Integer> nroIteracionesOpt = parser.accepts("nroIteraciones").withRequiredArg().ofType(Integer.class).defaultsTo(2);
 		
 		OptionSet options = null;
 		try {
@@ -67,7 +74,9 @@ public class App {
 		boolean optimumCells = options.valueOf(optimumCellsOpt);
 		boolean efficiency = options.valueOf(efficiencyOpt);
 		boolean offLattice = options.valueOf(offLatticeOpt);
-
+		int option= options.valueOf(optionOpt);
+		int nroIteraciones=options.valueOf(nroIteracionesOpt);
+		
 		double modVelocity = options.valueOf(modVelocityOpt);
 		long time = options.valueOf(timeOpt);
 		double noise = options.valueOf(noiseOpt);
@@ -107,14 +116,82 @@ public class App {
 
 		} else if(offLattice){
 			
+			offLattice(option, numParticles, l, m, time, modVelocity, noise, rand, searchType, nroIteraciones);
 			
+		}else{
+			List<Particle> particles = generateParticles(numParticles, l, null);
+		    Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 20.0);
+
+			System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
+			System.out.println("Execution time: " + neighbors.getExecutionTime());
+		}
+	}
+
+	private static void offLattice(int option, int numParticles, int l, int m, long time, double modVelocity, double noise, Random rand, int searchType, int nroIteraciones) throws IOException {
+		
+		if(option==OLNOISE){
+			XYZExporter exporter = new XYZExporter(Paths.get("./data/va-noise.csv").toString());
+			Writer writer=exporter.startLattice();
+			
+			for(double r=0.0; r<=5.0; r+=0.2){
+				//promedio de varias corridas
+				double va=0;
+				for(int iteration=0; iteration<nroIteraciones; iteration++){
+					List<Particle> particles = generateParticles(numParticles, l, 0.0);
+					
+					OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, r, rand);
+					
+					for(long t=0; t<time; t++){
+						System.out.println("r: "+ r +" iteracion: " + iteration +" t: " + (time - t));
+						Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 1);
+						offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
+						particles=offLatticeImpl.reposicionarParticulas(l, 1);
+					}
+					va+=offLatticeImpl.getVa();
+				}
+				va=va/nroIteraciones;
+				exporter.addCVSLine(writer, va, r);
+			}
+			writer.close();
+			
+			
+		}else if(option==OLDENSITY){
+			
+			XYZExporter exporter = new XYZExporter(Paths.get("./data/va-density.csv").toString());
+			Writer writer=exporter.startLattice();
+			
+			for(int nParticles=1; nParticles<=4001; nParticles+=1000){
+				//promedio de varias corridas
+				double va=0;
+				for(int iteration=0; iteration<nroIteraciones; iteration++){
+					List<Particle> particles = generateParticles(nParticles, l, 0.0);
+					
+					OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, noise, rand);
+					
+					for(long t=0; t<time; t++){
+						System.out.println("n: "+ nParticles +" iteracion: " + iteration +" t: " + (time - t));
+						Neighbors neighbors = runAlgorithm(particles, searchType, nParticles, l, m, 1);
+						offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
+						particles=offLatticeImpl.reposicionarParticulas(l, 1);
+					}
+					va+=offLatticeImpl.getVa();
+				}
+				va=va/nroIteraciones;
+				exporter.addCVSLine(writer, va, ((double)nParticles)/l*l);
+			}
+			writer.close();
+			
+			
+			
+			
+		}else{
 			List<Particle> particles = generateParticles(numParticles, l, 0.0);
 		    
 			XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
 			OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, noise, rand);
 			
 			Writer writer=exporter.startLattice();
-			System.out.println("Va:" + offLatticeImpl.getVa());
+//			System.out.println("Va:" + offLatticeImpl.getVa());
 			for(long t=0; t<time; t++){
 //				System.out.println("t: " + (time - t));
 				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 1);
@@ -125,15 +202,10 @@ public class App {
 			}
 			writer.close();
 			
-			System.out.println("Va-:" + offLatticeImpl.getVa());
-
-		}else{
-			List<Particle> particles = generateParticles(numParticles, l, null);
-		    Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 20.0);
-
-			System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
-			System.out.println("Execution time: " + neighbors.getExecutionTime());
+//			System.out.println("Va-:" + offLatticeImpl.getVa());
 		}
+
+		
 	}
 
 	private static void runEfficiency(int l, double radius, double particleRadius) {

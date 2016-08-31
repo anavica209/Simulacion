@@ -71,4 +71,11 @@ public class XYZExporter {
 
 	}
 
+	public void addCVSLine(Writer writer, double param1, double param2) throws IOException {
+		writer.write(String.format("%f, %f\n", param1, param2));
+		
+	}
+
+	
+
 }
