@@ -46,9 +46,15 @@ public class CellIndexSearch extends NeighborSearch {
         for (Particle particle : particles) {
             debug("Searching for neighbors of particle (%f; %f) within radius %f", particle.x, particle.y, radius);
 
-            int x = (int) (particle.x / m);
-            int y = (int) (particle.y / m);
-            int d = (int) Math.ceil(radius / m);
+//            int x = (int) (particle.x / m);
+//            int y = (int) (particle.y / m);
+//            int d = (int) Math.ceil(radius / m);
+			
+			int div = (int) (l / m);
+
+			int x = (int) (particle.x / div);
+			int y = (int) (particle.y / div);
+			int d = (int) Math.ceil(radius / div);
 
             debug("Particle is in block (%d, %d)", x, y);
 
@@ -81,23 +87,26 @@ public class CellIndexSearch extends NeighborSearch {
         }
     }
 
-    private Matrix<List<Particle>> getMatrixFromParticles(List<Particle> particles) {
-        Matrix<List<Particle>> matrix = new Matrix<List<Particle>>(m, m);
+	private Matrix<List<Particle>> getMatrixFromParticles(List<Particle> particles) {
+		Matrix<List<Particle>> matrix = new Matrix<List<Particle>>(m, m);
 
-        for (int i = 0; i < m; i++){
-            for (int j = 0; j < m; j++){
-                matrix.put(i, j, new ArrayList<Particle>());
-            }
-        }
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < m; j++) {
+				matrix.put(i, j, new ArrayList<Particle>());
+			}
+		}
 
-        for (Particle p : particles){
-            int x = (int) (p.x / (l / m));
-            int y = (int) (p.y / (l / m));
+		for (Particle p : particles) {
+			int x = (int) (p.x /(l / m*1.0));
+			int y = (int) (p.y / (l / (m*1.0)));
+			
+//			System.out.println(x+"  "+y+"   "+(l / m));
+//			System.out.flush();
+			
+			List<Particle> cell = matrix.get(x, y);
+			cell.add(p);
+		}
 
-            List<Particle> cell = matrix.get(x, y);
-            cell.add(p);
-        }
-
-        return matrix;
-    }
+		return matrix;
+	}
 }

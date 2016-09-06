@@ -27,14 +27,14 @@ public class App {
 	public static void main(String[] args) throws IOException {
 		OptionParser parser = new OptionParser();
 
-		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(2000);
-		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(20);
+		OptionSpec<Integer> nOpt = parser.accepts("n").withRequiredArg().ofType(Integer.class).defaultsTo(20);
+		OptionSpec<Integer> lOpt = parser.accepts("l").withRequiredArg().ofType(Integer.class).defaultsTo(100);
 		OptionSpec<Integer> mOpt = parser.accepts("m").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> ntimesOpt = parser.accepts("ntimes").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> lincOpt = parser.accepts("linc").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> lstartOpt = parser.accepts("lstart").withRequiredArg().ofType(Integer.class).defaultsTo(10);
 		OptionSpec<Integer> searchOpt = parser.accepts("search").withRequiredArg().ofType(Integer.class)
-				.defaultsTo(CIMCPC);
+				.defaultsTo(CIM);
 
 		OptionSpec<Boolean> generateOvitoOpt = parser.accepts("ovito").withRequiredArg().ofType(Boolean.class)
 				.defaultsTo(true);
@@ -43,13 +43,17 @@ public class App {
 		OptionSpec<Boolean> efficiencyOpt = parser.accepts("efficiency").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
 		
 //		---off lattice
-		OptionSpec<Boolean> offLatticeOpt = parser.accepts("offLattice").withRequiredArg().ofType(Boolean.class).defaultsTo(true);
-		OptionSpec<Integer> optionOpt = parser.accepts("option").withRequiredArg().ofType(Integer.class).defaultsTo(OLDENSITY);
+		OptionSpec<Boolean> offLatticeOpt = parser.accepts("offLattice").withRequiredArg().ofType(Boolean.class).defaultsTo(false);
+		OptionSpec<Integer> optionOpt = parser.accepts("option").withRequiredArg().ofType(Integer.class).defaultsTo(OLNONE);
 		
-		OptionSpec<Double> modVelocityOpt = parser.accepts("modVelocity").withRequiredArg().ofType(Double.class).defaultsTo(0.03);
+		OptionSpec<Double> modVelocityOpt = parser.accepts("modVelocity").withRequiredArg().ofType(Double.class).defaultsTo(1.0);
 		OptionSpec<Long> timeOpt = parser.accepts("time").withRequiredArg().ofType(Long.class).defaultsTo(500L);
-		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(2.0);
+		OptionSpec<Double> noiseOpt = parser.accepts("noise").withRequiredArg().ofType(Double.class).defaultsTo(0.0);
 		OptionSpec<Integer> nroIteracionesOpt = parser.accepts("nroIteraciones").withRequiredArg().ofType(Integer.class).defaultsTo(2);
+		
+//		Movimiento Browniano
+		OptionSpec<Boolean> brownianoOpt = parser.accepts("browniano").withRequiredArg().ofType(Boolean.class).defaultsTo(true);
+		
 		
 		OptionSet options = null;
 		try {
@@ -80,6 +84,9 @@ public class App {
 		double modVelocity = options.valueOf(modVelocityOpt);
 		long time = options.valueOf(timeOpt);
 		double noise = options.valueOf(noiseOpt);
+		
+
+		boolean browniano = options.valueOf(brownianoOpt);
 
 		if (stats) {
 			for (double lindex = lstart; lindex <= l;) {
@@ -117,7 +124,16 @@ public class App {
 		} else if(offLattice){
 			
 			offLattice(option, numParticles, l, m, time, modVelocity, noise, rand, searchType, nroIteraciones);
+		
+		} else if(browniano){
 			
+			Double bigMass = 100.0;
+			Double smallMass = 0.1;
+			Double bigR = 0.005;
+			Double smallR = 0.0005;
+			Double brwVelocity = 0.1;
+			browniano(option, numParticles, l, m, time, bigMass, smallMass, bigR, smallR, brwVelocity, rand, searchType, nroIteraciones);
+		
 		}else{
 			List<Particle> particles = generateParticles(numParticles, l, null);
 		    Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 20.0);
@@ -125,6 +141,13 @@ public class App {
 			System.out.println("Neighbors: " + neighbors.getAllNeighbors().toString());
 			System.out.println("Execution time: " + neighbors.getExecutionTime());
 		}
+	}
+
+	private static void browniano(int option, int numParticles, int l, int m, long time, Double bigMass,
+			Double smallMass, Double bigR, Double smallR, Double brwVelocity, Random rand, int searchType,
+			int nroIteraciones) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void offLattice(int option, int numParticles, int l, int m, long time, double modVelocity, double noise, Random rand, int searchType, int nroIteraciones) throws IOException {
@@ -193,8 +216,8 @@ public class App {
 			Writer writer=exporter.startLattice();
 //			System.out.println("Va:" + offLatticeImpl.getVa());
 			for(long t=0; t<time; t++){
-//				System.out.println("t: " + (time - t));
-				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, 1);
+				System.out.println("t: " + (time - t));
+				Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, l/m);
 				offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
 				particles=offLatticeImpl.reposicionarParticulas(l, 1);
 				
