@@ -145,8 +145,25 @@ public class App {
 
 	private static void browniano(int option, int numParticles, int l, int m, long time, Double bigMass,
 			Double smallMass, Double bigR, Double smallR, Double brwVelocity, Random rand, int searchType,
-			int nroIteraciones) {
-		// TODO Auto-generated method stub
+			int nroIteraciones) throws IOException {
+		List<Particle> particles = generateParticles(numParticles, l, 0.0);
+	    
+		XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
+//		OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, noise, rand);
+		
+		Writer writer=exporter.startLattice();
+//		System.out.println("Va:" + offLatticeImpl.getVa());
+		for(long t=0; t<time; t++){
+			System.out.println("t: " + (time - t));
+			Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, l/m);
+//			offLatticeImpl.calcularVelocidades(neighbors.getAllNeighbors());
+//			particles=offLatticeImpl.reposicionarParticulas(l, 1);
+			
+			exporter.exportOffLattice(writer, particles, t);
+		}
+		writer.close();
+		
+//		System.out.println("Va-:" + offLatticeImpl.getVa());
 		
 	}
 
