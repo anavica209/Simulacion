@@ -1,4 +1,6 @@
-package ar.edu.itba.simul.group8;
+package ar.edu.itba.simul.group8.tp3;
+
+import ar.edu.itba.simul.group8.common.Particle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +11,7 @@ import java.util.Random;
 public class Browniano {
 
 	private Double tiempoImpacto;
-	public  Particle particleImpact1;
+	public Particle particleImpact1;
 	public Particle particleImpact2;
 	private double square;
 

@@ -1,4 +1,4 @@
-package ar.edu.itba.simul.group8;
+package ar.edu.itba.simul.group8.common;
 
 public class Particle {
 

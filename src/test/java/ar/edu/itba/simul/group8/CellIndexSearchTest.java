@@ -1,5 +1,11 @@
 package ar.edu.itba.simul.group8;
 
+import ar.edu.itba.simul.group8.common.Pair;
+import ar.edu.itba.simul.group8.common.Particle;
+import ar.edu.itba.simul.group8.tp1.BruteForceSearch;
+import ar.edu.itba.simul.group8.tp1.CellIndexSearch;
+import ar.edu.itba.simul.group8.tp1.NeighborSearch;
+import ar.edu.itba.simul.group8.tp1.Neighbors;
 import org.junit.Test;
 
 import java.util.ArrayList;

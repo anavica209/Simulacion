@@ -1,10 +1,12 @@
-package ar.edu.itba.simul.group8;
+package ar.edu.itba.simul.group8.tp1;
+
+import ar.edu.itba.simul.group8.common.Particle;
 
 import java.util.List;
 
 public class BruteForceSearch extends NeighborSearch {
 
-    BruteForceSearch(List<Particle> particles, double l, int m) {
+    public BruteForceSearch(List<Particle> particles, double l, int m) {
         super(particles, l, m);
     }
 

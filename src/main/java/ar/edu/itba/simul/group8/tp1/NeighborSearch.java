@@ -1,4 +1,7 @@
-package ar.edu.itba.simul.group8;
+package ar.edu.itba.simul.group8.tp1;
+
+import ar.edu.itba.simul.group8.common.Particle;
+import ar.edu.itba.simul.group8.tp1.Neighbors;
 
 import java.util.*;
 

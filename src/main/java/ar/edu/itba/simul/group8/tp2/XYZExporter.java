@@ -1,4 +1,6 @@
-package ar.edu.itba.simul.group8;
+package ar.edu.itba.simul.group8.tp2;
+
+import ar.edu.itba.simul.group8.common.Particle;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -11,11 +13,11 @@ public class XYZExporter {
 
     private final String filename;
 
-    XYZExporter(String filename) {
+    public XYZExporter(String filename) {
         this.filename = filename;
     }
 
-    void export(List<Particle> particles) throws IOException {
+    public void export(List<Particle> particles) throws IOException {
         Writer w = new BufferedWriter(new FileWriter(filename));
 
         w.write(String.format("%d\n", particles.size()));
@@ -28,7 +30,7 @@ public class XYZExporter {
         w.close();
     }
 
-    void exportWithSelection(List<Particle> particles, Particle selection, Set<Particle> neighbors) throws IOException {
+    public void exportWithSelection(List<Particle> particles, Particle selection, Set<Particle> neighbors) throws IOException {
         Writer w = new BufferedWriter(new FileWriter(filename));
 
         w.write(String.format("%d\n", particles.size()));

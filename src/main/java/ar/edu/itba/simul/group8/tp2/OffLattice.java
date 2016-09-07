@@ -1,4 +1,6 @@
-package ar.edu.itba.simul.group8;
+package ar.edu.itba.simul.group8.tp2;
+
+import ar.edu.itba.simul.group8.common.Particle;
 
 import java.util.ArrayList;
 import java.util.HashMap;

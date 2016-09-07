@@ -1,4 +1,7 @@
-package ar.edu.itba.simul.group8;
+package ar.edu.itba.simul.group8.tp1;
+
+import ar.edu.itba.simul.group8.common.Matrix;
+import ar.edu.itba.simul.group8.common.Particle;
 
 import java.util.ArrayList;
 import java.util.List;
