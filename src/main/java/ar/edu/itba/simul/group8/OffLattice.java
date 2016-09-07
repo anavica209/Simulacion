@@ -13,7 +13,6 @@ public class OffLattice {
 	private double noise;
 	private Random rand;
 	private Map<Particle, Double> birdMap;
-	private List<Point> va=new ArrayList<Point>();
 
 	public OffLattice(List<Particle> particles, double modVelocity, double noise, Random rand) {
 		this.modVelocity = modVelocity;
@@ -33,7 +32,6 @@ public class OffLattice {
 	public void calcularVelocidades(Map<Particle, Set<Particle>> allNeighbors) {
 		HashMap<Particle, Double> bm = new HashMap<Particle, Double>();
 
-		va=new ArrayList<Point>();
 		for (Particle p : birdMap.keySet()) {
 			double degressNoise = rand.nextDouble() * (noise) - noise / 2.0;
 			

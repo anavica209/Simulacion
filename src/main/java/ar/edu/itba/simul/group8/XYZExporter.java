@@ -76,6 +76,22 @@ public class XYZExporter {
 		
 	}
 
+	public Writer startBrowniano() throws IOException {
+		return new BufferedWriter(new FileWriter(filename));
+	}
+
+	public void exportBrowniano(Writer writer, List<Map<String, Object>> evolvedParticles, long t) throws IOException {
+		writer.write(String.format("%d\n", evolvedParticles.size()));
+        writer.write("Particles (x, y, x2, y2, radius, r, g, b)  at "+t+"\n");
+//        TODO: MODIFICAR A VECTORIAL...
+        for (Map<String, Object> m : evolvedParticles) {
+        	Particle p=(Particle) m.get("particle");
+        	writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
+        			(Double)m.get("x1"), (Double)m.get("y1"), (Double)m.get("x2"), (Double)m.get("y2"),
+        			2.5, 255, (int) (p.id * 255.0 / 20), (int)(p.avg * 255.0 / 20)).replace(',', '.'));
+        }
+	}
+
 	
 
 }
