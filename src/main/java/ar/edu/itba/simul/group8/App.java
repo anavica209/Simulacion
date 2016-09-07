@@ -163,7 +163,6 @@ public class App {
 			}
 			List<Map<String, Object>> evolvedParticles=brownianoImpl.evolucionarSistema(particles);
 			brownianoImpl.calcularVelocidades(particles);
-			
 			exporter.exportBrowniano(writer, evolvedParticles, t);
 		}
 		writer.close();
