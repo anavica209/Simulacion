@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class XYZExporter {
@@ -76,15 +75,13 @@ public class XYZExporter {
 		
 	}
 
-	public void exportBrowniano(Writer writer, List<Map<String, Object>> evolvedParticles, long t) throws IOException {
-		writer.write(String.format("%d\n", evolvedParticles.size()));
+	public void exportBrowniano(Writer writer, List<Particle> particles, long t) throws IOException {
+		writer.write(String.format("%d\n", particles.size()));
         writer.write("Particles (x, y, x2, y2, radius, r, g, b)  at "+t+"\n");
-//        TODO: MODIFICAR A VECTORIAL...
-        for (Map<String, Object> m : evolvedParticles) {
-        	Particle p=(Particle) m.get("particle");
+        for (Particle p : particles) {
         	writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
-        			(Double)m.get("x1"), (Double)m.get("y1"), (Double)m.get("x2"), (Double)m.get("y2"),
-        			2.5, 255, (int) (p.id * 255.0 / 20), (int)(p.avg * 255.0 / 20)).replace(',', '.'));
+        			p.x, p.y, p.vx, p.vy,
+        			p.radius, 255, 0, 0));
         }
 	}
 

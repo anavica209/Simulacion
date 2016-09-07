@@ -1,17 +1,16 @@
 package ar.edu.itba.simul.group8;
 
-import joptsimple.OptionException;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import joptsimple.OptionSpec;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+
+import joptsimple.OptionException;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
 
 public class App {
 
@@ -156,6 +155,7 @@ public class App {
 		
 		Writer writer=exporter.startWriter();
 		for(long t=0; t<brownTime; t++){
+			exporter.exportBrowniano(writer, particles, t);
 			brownianoImpl.calcularTiempoImpacto(particles);
 			if(brownianoImpl.getTiempoImpacto()==null){
 //				finalizar
@@ -164,11 +164,10 @@ public class App {
 			System.out.println("t: " + (brownTime - t)+"\tTiempo impacto:"+brownianoImpl.getTiempoImpacto()+ "\tp1:"+ brownianoImpl.particleImpact1+"\tp2:"+ brownianoImpl.particleImpact2);
 			System.out.println("\tp1 x:"+ brownianoImpl.particleImpact1.x+"\tp2 y:"+ brownianoImpl.particleImpact1.y);
 			
-			List<Map<String, Object>> evolvedParticles=brownianoImpl.evolucionarSistema(particles);
+			brownianoImpl.evolucionarSistema(particles);
 			brownianoImpl.calcularVelocidades(particles);
 			
-			exporter.exportOffLattice(writer, particles, t);
-//			exporter.exportBrowniano(writer, evolvedParticles, t);
+//			exporter.exportBrowniano(writer, particles, t);
 		}
 		writer.close();
 		
@@ -328,7 +327,7 @@ public class App {
 		particles.add(new Particle(0, x, y, bigR, bigMass));
 		
 		
-		for (int i = 0; i < numParticles; i++) {
+		for (int i = 0; i < numParticles-1; i++) {
 			int j=i;
 			while(j==i){
 				double x2 = rand.nextDouble() * square-0.001;

@@ -56,10 +56,6 @@ public class Browniano {
 
 				if (!(d < 0 || deltaVR >=0)) {
 					hayColision = true;
-//					System.out.println(deltaVR);
-//					System.out.println("d:" +d);
-//					System.out.println((deltaVR + Math.sqrt(d)));
-//					System.out.println(deltaVV * deltaVV);
 					double tc = -((deltaVR + Math.sqrt(d)) / (deltaVV * deltaVV));
 					if (timeImpact == 0 || timeImpact > tc) {
 						timeImpact = tc;
