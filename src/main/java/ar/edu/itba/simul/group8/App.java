@@ -132,7 +132,7 @@ public class App {
 			Double bigR = 0.005;
 			Double smallR = 0.0005;
 			Double brwVelocity = 0.1;
-			double square=0.5;
+			double square=0.05;
 			time=1500;
 			numParticles=20;
 			browniano(option, numParticles, square, time, bigMass, smallMass, bigR, smallR, brwVelocity, rand);

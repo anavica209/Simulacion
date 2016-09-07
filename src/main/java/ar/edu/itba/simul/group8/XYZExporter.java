@@ -81,7 +81,7 @@ public class XYZExporter {
         for (Particle p : particles) {
         	writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
         			p.x, p.y, p.vx, p.vy,
-        			p.radius, 255, 0, 0));
+        			p.radius, 255, 0, 0).replace(',', '.'));
         }
 	}
 
