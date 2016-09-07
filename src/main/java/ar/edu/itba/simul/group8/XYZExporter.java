@@ -66,7 +66,7 @@ public class XYZExporter {
         }
 	}
 
-	public Writer startLattice() throws IOException {
+	public Writer startWriter() throws IOException {
 		 return new BufferedWriter(new FileWriter(filename));
 
 	}
@@ -74,10 +74,6 @@ public class XYZExporter {
 	public void addCVSLine(Writer writer, double param1, double param2) throws IOException {
 		writer.write(String.format("%f, %f\n", param1, param2));
 		
-	}
-
-	public Writer startBrowniano() throws IOException {
-		return new BufferedWriter(new FileWriter(filename));
 	}
 
 	public void exportBrowniano(Writer writer, List<Map<String, Object>> evolvedParticles, long t) throws IOException {

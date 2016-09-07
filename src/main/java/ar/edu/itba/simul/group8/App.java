@@ -127,14 +127,16 @@ public class App {
 			offLattice(option, numParticles, l, m, time, modVelocity, noise, rand, searchType, nroIteraciones);
 		
 		} else if(browniano){
-			
+			System.out.println("browniano");
 			Double bigMass = 100.0;
 			Double smallMass = 0.1;
 			Double bigR = 0.005;
 			Double smallR = 0.0005;
 			Double brwVelocity = 0.1;
 			double square=0.5;
-			browniano(option, numParticles, square, time, bigMass, smallMass, bigR, smallR, brwVelocity, rand, CIM, nroIteraciones);
+			time=1500;
+			numParticles=20;
+			browniano(option, numParticles, square, time, bigMass, smallMass, bigR, smallR, brwVelocity, rand);
 		
 		}else{
 			List<Particle> particles = generateParticles(numParticles, l, null);
@@ -146,24 +148,27 @@ public class App {
 	}
 
 	private static void browniano(int option, int numParticles, double square, long brownTime, Double bigMass,
-			Double smallMass, Double bigR, Double smallR, Double brwVelocity, Random rand, int searchType,
-			int nroIteraciones) throws IOException {
+			Double smallMass, Double bigR, Double smallR, Double brwVelocity, Random rand) throws IOException {
 		List<Particle> particles = generateParticlesBrown(numParticles, square, bigMass, smallMass, bigR, smallR, rand);
 	    
 		XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
 		Browniano brownianoImpl= new Browniano(particles, brwVelocity, rand, square);
 		
-		Writer writer=exporter.startBrowniano();
+		Writer writer=exporter.startWriter();
 		for(long t=0; t<brownTime; t++){
-			System.out.println("t: " + (brownTime - t));
 			brownianoImpl.calcularTiempoImpacto(particles);
 			if(brownianoImpl.getTiempoImpacto()==null){
 //				finalizar
 				break;
 			}
+			System.out.println("t: " + (brownTime - t)+"\tTiempo impacto:"+brownianoImpl.getTiempoImpacto()+ "\tp1:"+ brownianoImpl.particleImpact1+"\tp2:"+ brownianoImpl.particleImpact2);
+			System.out.println("\tp1 x:"+ brownianoImpl.particleImpact1.x+"\tp2 y:"+ brownianoImpl.particleImpact1.y);
+			
 			List<Map<String, Object>> evolvedParticles=brownianoImpl.evolucionarSistema(particles);
 			brownianoImpl.calcularVelocidades(particles);
-			exporter.exportBrowniano(writer, evolvedParticles, t);
+			
+			exporter.exportOffLattice(writer, particles, t);
+//			exporter.exportBrowniano(writer, evolvedParticles, t);
 		}
 		writer.close();
 		
@@ -176,7 +181,7 @@ public class App {
 		
 		if(option==OLNOISE){
 			XYZExporter exporter = new XYZExporter(Paths.get("./data/va-noise.csv").toString());
-			Writer writer=exporter.startLattice();
+			Writer writer=exporter.startWriter();
 			
 			for(double r=0.0; r<=5.0; r+=0.2){
 				//promedio de varias corridas
@@ -203,7 +208,7 @@ public class App {
 		}else if(option==OLDENSITY){
 			
 			XYZExporter exporter = new XYZExporter(Paths.get("./data/va-density.csv").toString());
-			Writer writer=exporter.startLattice();
+			Writer writer=exporter.startWriter();
 			
 			for(int nParticles=1; nParticles<=4001; nParticles+=1000){
 				//promedio de varias corridas
@@ -235,7 +240,7 @@ public class App {
 			XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
 			OffLattice offLatticeImpl= new OffLattice(particles, modVelocity, noise, rand);
 			
-			Writer writer=exporter.startLattice();
+			Writer writer=exporter.startWriter();
 //			System.out.println("Va:" + offLatticeImpl.getVa());
 			for(long t=0; t<time; t++){
 				System.out.println("t: " + (time - t));

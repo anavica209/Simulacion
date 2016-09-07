@@ -9,8 +9,8 @@ import java.util.Random;
 public class Browniano {
 
 	private Double tiempoImpacto;
-	private Particle particleImpact1;
-	private Particle particleImpact2;
+	public  Particle particleImpact1;
+	public Particle particleImpact2;
 	private double square;
 
 	public Browniano(List<Particle> particles, double brwVelocity, Random rand, double square) {
@@ -54,9 +54,12 @@ public class Browniano {
 
 				double d = deltaVR - deltaVV * (deltaRR - sigma * sigma);
 
-				if (!(d >= 0 || deltaVR < 0)) {
+				if (!(d < 0 || deltaVR >=0)) {
 					hayColision = true;
-
+//					System.out.println(deltaVR);
+//					System.out.println("d:" +d);
+//					System.out.println((deltaVR + Math.sqrt(d)));
+//					System.out.println(deltaVV * deltaVV);
 					double tc = -((deltaVR + Math.sqrt(d)) / (deltaVV * deltaVV));
 					if (timeImpact == 0 || timeImpact > tc) {
 						timeImpact = tc;
@@ -112,6 +115,8 @@ public class Browniano {
 		return tiempoImpacto = timeImpact;
 	}
 
+	
+
 	public List<Map<String, Object>> evolucionarSistema(List<Particle> ppp) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
@@ -132,7 +137,8 @@ public class Browniano {
 		}
 		return list;
 	}
-
+	
+	
 	public void calcularVelocidades(List<Particle> particles) {
 		if (particleImpact2 != null) {
 			double sigma = particleImpact2.radius + particleImpact1.radius;
