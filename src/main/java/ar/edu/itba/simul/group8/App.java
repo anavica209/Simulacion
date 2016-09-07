@@ -133,7 +133,8 @@ public class App {
 			Double bigR = 0.005;
 			Double smallR = 0.0005;
 			Double brwVelocity = 0.1;
-			browniano(option, numParticles, l, m, time, bigMass, smallMass, bigR, smallR, brwVelocity, rand, CIM, nroIteraciones);
+			double square=0.5;
+			browniano(option, numParticles, square, time, bigMass, smallMass, bigR, smallR, brwVelocity, rand, CIM, nroIteraciones);
 		
 		}else{
 			List<Particle> particles = generateParticles(numParticles, l, null);
@@ -144,25 +145,24 @@ public class App {
 		}
 	}
 
-	private static void browniano(int option, int numParticles, int l, int m, long brownTime, Double bigMass,
+	private static void browniano(int option, int numParticles, double square, long brownTime, Double bigMass,
 			Double smallMass, Double bigR, Double smallR, Double brwVelocity, Random rand, int searchType,
 			int nroIteraciones) throws IOException {
-		List<Particle> particles = generateParticlesBrown(numParticles, l, bigMass, smallMass, bigR, smallR, rand);
+		List<Particle> particles = generateParticlesBrown(numParticles, square, bigMass, smallMass, bigR, smallR, rand);
 	    
 		XYZExporter exporter = new XYZExporter(Paths.get("./data/particles.xyz").toString());
-		Browniano brownianoImpl= new Browniano(particles, brwVelocity, rand);
+		Browniano brownianoImpl= new Browniano(particles, brwVelocity, rand, square);
 		
 		Writer writer=exporter.startBrowniano();
 		for(long t=0; t<brownTime; t++){
 			System.out.println("t: " + (brownTime - t));
-			Neighbors neighbors = runAlgorithm(particles, searchType, numParticles, l, m, l/m);
 			brownianoImpl.calcularTiempoImpacto(particles);
 			if(brownianoImpl.getTiempoImpacto()==null){
 //				finalizar
 				break;
 			}
 			List<Map<String, Object>> evolvedParticles=brownianoImpl.evolucionarSistema(particles);
-			brownianoImpl.calcularVelocidades(particles, neighbors.getAllNeighbors());
+			brownianoImpl.calcularVelocidades(particles);
 			
 			exporter.exportBrowniano(writer, evolvedParticles, t);
 		}
@@ -315,20 +315,20 @@ public class App {
 	}
 	
 	private static List<Particle> generateParticlesBrown(int numParticles,
-			int l, Double bigMass, Double smallMass, Double bigR, Double smallR, Random rand) {
+			Double square, Double bigMass, Double smallMass, Double bigR, Double smallR, Random rand) {
 
 		List<Particle> particles = new ArrayList<Particle>(numParticles);
 
-		double x = rand.nextDouble() * l-0.001;
-		double y = rand.nextDouble() * l-0.001;
+		double x = rand.nextDouble() * square-0.001;
+		double y = rand.nextDouble() * square-0.001;
 		particles.add(new Particle(0, x, y, bigR, bigMass));
 		
 		
 		for (int i = 0; i < numParticles; i++) {
 			int j=i;
 			while(j==i){
-				double x2 = rand.nextDouble() * l-0.001;
-				double y2 = rand.nextDouble() * l-0.001;
+				double x2 = rand.nextDouble() * square-0.001;
+				double y2 = rand.nextDouble() * square-0.001;
 				
 				boolean isOver=false;
 				for(Particle p: particles){

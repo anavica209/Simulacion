@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class Browniano {
 
 	private Double tiempoImpacto;
 	private Particle particleImpact1;
 	private Particle particleImpact2;
+	private double square;
 	
-	public Browniano(List<Particle> particles, double brwVelocity, Random rand) {
+	public Browniano(List<Particle> particles, double brwVelocity, Random rand, double square) {
 		Particle bigp =null;
 		for (Particle p : particles) {
 			p.vx= rand.nextDouble()* 2 * brwVelocity -brwVelocity;
@@ -26,6 +26,8 @@ public class Browniano {
 		}
 		bigp.vx=0;
 		bigp.vy=0;
+		
+		this.square=square;
 	}
 	
 	
@@ -94,10 +96,8 @@ public class Browniano {
 	}
 	
 
-	public void calcularVelocidades(List<Particle> particles, Map<Particle, Set<Particle>> allNeighbors) {
+	public void calcularVelocidades(List<Particle> particles) {
 //		Colisión de Partículas de distinta masa (choque elástico: sin fricción ni rotación).
-		
-		
 		double sigma = particleImpact2.radius+particleImpact1.radius;
 		double deltaX = particleImpact2.x-particleImpact1.x;
 		double deltaY = particleImpact2.y-particleImpact1.y;
