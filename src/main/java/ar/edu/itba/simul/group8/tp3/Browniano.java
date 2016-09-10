@@ -15,7 +15,8 @@ public class Browniano {
 	public Particle particleImpact2;
 	private double square;
 
-	public Browniano(List<Particle> particles, double brwVelocity, Random rand, double square) {
+	public Browniano(List<Particle> particles, double brwVelocity, Random rand,
+			double square) {
 		Particle bigp = null;
 		for (Particle p : particles) {
 			p.vx = rand.nextDouble() * 2 * brwVelocity - brwVelocity;
@@ -40,68 +41,74 @@ public class Browniano {
 			for (int j = i + 1; j < particles.size(); j++) {
 
 				Particle pj = particles.get(j);
-
 				Particle pi = particles.get(i);
+				
 				double sigma = pi.radius + pj.radius;
 				double deltaX = pj.x - pi.x;
 				double deltaY = pj.y - pi.y;
 
 				double deltaVX = pj.vx - pi.vx;
 				double deltaVY = pj.vy - pi.vy;
-
-				double deltaVR = deltaVX * deltaX + deltaVY * deltaY;
-				double deltaVV = deltaVX * deltaVX + deltaVY * deltaVY;
-
+				
 				double deltaRR = deltaX * deltaX + deltaY * deltaY;
 
-				double d = deltaVR - deltaVV * (deltaRR - sigma * sigma);
+				double deltaVV = deltaVX * deltaVX + deltaVY * deltaVY;
+				
+				double deltaVR = deltaVX * deltaX + deltaVY * deltaY;
 
-				if (!(d < 0 || deltaVR >=0)) {
-					hayColision = true;
-					double tc = -((deltaVR + Math.sqrt(d)) / (deltaVV * deltaVV));
-					if (timeImpact == 0 || timeImpact > tc) {
+				double d = deltaVR * deltaVR - deltaVV * (deltaRR - sigma * sigma);
+
+				if (!(d < 0 || deltaVR >= 0)) {
+					double tc = -((deltaVR + Math.sqrt(d)) / deltaVV);
+					if ((timeImpact == 0 && tc>0)
+							|| (tc > 0 && timeImpact > tc && timeImpact > 0)) {
 						timeImpact = tc;
+						hayColision = true;
 						particleImpact1 = pj;
 						particleImpact2 = pi;
 					}
 				}
 			}
 		}
+		
 		for (Particle p : particles) {
 			double tc = 0.0;
 			if (p.vx == 0 && p.vy == 0) {
 				;
 			} else if (p.vx != 0 && p.vy == 0) {
-				hayColision = true;
 				if (p.vx > 0) {
-					tc = (square - p.x) / p.vx;
+					tc = (square - p.radius - p.x) / p.vx;
 				} else {
-					tc = (square - p.x) / p.vx;
+					tc = (0 + p.radius - p.x) / p.vx;
 				}
 			} else if (p.vx == 0 && p.vy != 0) {
-				hayColision = true;
 				if (p.vy > 0) {
-					tc = (square - p.y) / p.vy;
+					tc = (square - p.radius - p.y) / p.vy;
 				} else {
-					tc = (square - p.y) / p.vy;
+					tc = (0 + p.radius - p.y) / p.vy;
 				}
 			} else {
-				hayColision = true;
 				if (p.vx > 0) {
-					tc = (square - p.x) / p.vx;
+					tc = (square - p.radius - p.x) / p.vx;
 				} else {
-					tc = (square - p.x) / p.vx;
+					tc = (0 + p.radius - p.x) / p.vx;
 				}
 				double tc2;
 				if (p.vy > 0) {
-					tc2 = (square - p.y) / p.vy;
+					tc2 = (square - p.radius - p.y) / p.vy;
 				} else {
-					tc2 = (square - p.y) / p.vy;
+					tc2 = (0 + p.radius - p.y) / p.vy;
 				}
-				tc = Math.min(tc, tc2);
+				if (tc < 0 && tc2 > 0) {
+					tc = tc2;
+				} else if (tc > 0 && tc2 > 0) {
+					tc = Math.min(tc, tc2);
+				}
 
 			}
-			if ((timeImpact == 0 || timeImpact > tc) && tc != 0) {
+			if ((timeImpact == 0 && tc>0)
+					|| (tc > 0 && timeImpact > tc && timeImpact > 0)) {
+				hayColision = true;
 				timeImpact = tc;
 				particleImpact1 = p;
 				particleImpact2 = null;
@@ -113,9 +120,7 @@ public class Browniano {
 		return tiempoImpacto = timeImpact;
 	}
 
-	
-
-	public List<Map<String, Object>> evolucionarSistema(List<Particle> ppp) {
+	public List<Map<String, Object>> evolucionarSistema(List<Particle> ppp, double time) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
 		for (Particle p : ppp) {
@@ -123,11 +128,12 @@ public class Browniano {
 			m.put("particle", p);
 			m.put("x1", p.x);
 			m.put("y1", p.y);
-			double x = p.x + p.vx * tiempoImpacto;
-			double y = p.y + p.vy * tiempoImpacto;
+			double x = p.x + p.vx * time;
+			double y = p.y + p.vy * time;
 
 			p.x = x;
 			p.y = y;
+			
 			m.put("x2", p.x);
 			m.put("y2", p.y);
 			list.add(m);
@@ -135,10 +141,17 @@ public class Browniano {
 		}
 		return list;
 	}
-	
-	
+
 	public void calcularVelocidades(List<Particle> particles) {
 		if (particleImpact2 != null) {
+			if (particleImpact1.mass > 10.0 || 10.0 < particleImpact2.mass){
+	            System.out.println("\tp1 y:"+ particleImpact1.y+ " mass: "+particleImpact1.mass );
+	            System.out.println("\tp1 vx:"+ particleImpact1.vx+"\tp1 vy:"+ particleImpact1.vy);
+	            
+	            System.out.println("\tp2 x:"+ particleImpact2.x+"\tp2 y:"+ particleImpact2.y+ " mass: "+particleImpact2.mass );
+	            System.out.println("\tp2 vx:"+ particleImpact2.vx+"\tp2 vy:"+ particleImpact2.vy);
+	            System.out.println();
+			}
 			double sigma = particleImpact2.radius + particleImpact1.radius;
 			double deltaX = particleImpact2.x - particleImpact1.x;
 			double deltaY = particleImpact2.y - particleImpact1.y;
@@ -151,30 +164,27 @@ public class Browniano {
 			double jota = (2 * particleImpact1.mass * particleImpact2.mass * deltaVR)
 					/ (sigma * (particleImpact1.mass + particleImpact2.mass));
 
-			particleImpact1.vx = particleImpact1.vx + (jota * deltaX / sigma) * particleImpact1.mass;
-			particleImpact1.vy = particleImpact1.vy + (jota * deltaY / sigma) * particleImpact1.mass;
+			particleImpact1.vx = particleImpact1.vx + (jota * deltaX / sigma) / particleImpact1.mass;
+			particleImpact1.vy = particleImpact1.vy + (jota * deltaY / sigma) / particleImpact1.mass;
 
-			particleImpact2.vx = particleImpact2.vx - (jota * deltaX / sigma) * particleImpact2.mass;
-			particleImpact2.vy = particleImpact2.vy - (jota * deltaY / sigma) * particleImpact2.mass;
-			
+			particleImpact2.vx = particleImpact2.vx - (jota * deltaX / sigma) / particleImpact2.mass;
+			particleImpact2.vy = particleImpact2.vy - (jota * deltaY / sigma) / particleImpact2.mass;
+
 		} else {
 			Particle p = particleImpact1;
-			if (p.vx != 0 && p.vy == 0) {
-				particleImpact1.vx = -particleImpact1.vx;
-			} else if (p.vx == 0 && p.vy != 0) {
-				particleImpact1.vy = -particleImpact1.vy;
-			} else {
-				double tc;
-				if (p.vx > 0) {
-					tc = (square - p.x) / p.vx;
-				} else {
-					tc = (square - p.x) / p.vx;
-				}
-				if (tc == tiempoImpacto) {
-					particleImpact1.vx = -particleImpact1.vx;
-				} else {
-					particleImpact1.vy = -particleImpact1.vy;
-				}
+
+			if (p.vx > 0 && p.x + p.radius >= square) {
+				p.vx = -p.vx;
+			}
+			else if (p.vx < 0 && p.x - p.radius <= 0) {
+				p.vx = -p.vx;
+			}
+			
+			if (p.vy > 0 && p.y + p.radius >= square) {
+				p.vy = -p.vy;
+			}
+			else if (p.vy < 0 && p.y - p.radius <= 0) {
+				p.vy = -p.vy;
 			}
 		}
 	}
