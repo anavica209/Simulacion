@@ -79,25 +79,39 @@ public class XYZExporter {
 
 	public void exportBrowniano(Writer writer, List<Particle> particles, long t, double square, Double smallR) throws IOException {
 		writer.write(String.format("%d\n", particles.size()+4));
-        writer.write("Particles (x, y, x2, y2, radius, r, g, b)  at "+t+"\n");
+        writer.write("Particles (x, y, x2, y2, radius, r, g, b, selection)  at "+t+"\n");
         for (Particle p : particles) {
-        	writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
+        	if (p.radius>10.00) {
+        		writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
+            			p.x, p.y, p.vx, p.vy,
+            			p.radius, 255, 0, 0,1).replace(',', '.'));
+			} else if (Math.sqrt(Math.pow(p.vx, 2)+Math.pow(p.vy, 2)) > 0.09){
+        	writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
         			p.x, p.y, p.vx, p.vy,
-        			p.radius, 255, 0, 0).replace(',', '.'));
+        			p.radius, 255, 255, 0,0).replace(',', '.'));
+        } else if (Math.sqrt(Math.pow(p.vx, 2)+Math.pow(p.vy, 2)) > 0.06){
+        	writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
+        			p.x, p.y, p.vx, p.vy,
+        			p.radius, 255, 255, 255,0).replace(',', '.'));
+        } else {
+        	writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
+        			p.x, p.y, p.vx, p.vy,
+        			p.radius, 255, 0, 0,0).replace(',', '.'));
+        }
         }
         
-        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
+        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
     			0.0, 0.0, 0.0, 0.0,
-    			smallR, 0, 255, 0).replace(',', '.'));
-        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
+    			smallR, 0, 255, 0, 0).replace(',', '.'));
+        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
     			0.0, square, 0.0, 0.0,
-    			smallR, 0, 255, 0).replace(',', '.'));
-        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
+    			smallR, 0, 255, 0, 0).replace(',', '.'));
+        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
     			square, 0.0, 0.0, 0.0,
-    			smallR, 0, 255, 0).replace(',', '.'));
-        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\n", 
+    			smallR, 0, 255, 0, 0).replace(',', '.'));
+        writer.write(String.format("%f\t %f\t %f\t %f\t %f\t %d\t%d\t%d\t%d\n", 
     			square, square, 0.0, 0.0,
-    			smallR, 0, 255, 0).replace(',', '.'));
+    			smallR, 0, 255, 0, 0).replace(',', '.'));
 	}
 
 	
