@@ -1,19 +1,7 @@
 package ar.edu.itba.simul.group8;
 
-import ar.edu.itba.simul.group8.common.Particle;
-import ar.edu.itba.simul.group8.tp1.*;
-import ar.edu.itba.simul.group8.tp2.OffLattice;
-import ar.edu.itba.simul.group8.tp2.XYZExporter;
-import ar.edu.itba.simul.group8.tp3.Browniano;
-import joptsimple.OptionException;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import joptsimple.OptionSpec;
-
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
 
 public class App {
 

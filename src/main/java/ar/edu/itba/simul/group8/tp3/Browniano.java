@@ -21,6 +21,9 @@ public class Browniano {
 		for (Particle p : particles) {
 			p.vx = rand.nextDouble() * 2 * brwVelocity - brwVelocity;
 			p.vy = rand.nextDouble() * 2 * brwVelocity - brwVelocity;
+//			double angle = rand.nextDouble() * 2 * Math.PI;
+//			p.vy = Math.cos((angle));
+//			p.vx = Math.sin((angle));
 			if (bigp == null) {
 				bigp = p;
 			} else if (bigp.mass < p.mass) {
@@ -29,6 +32,26 @@ public class Browniano {
 		}
 		bigp.vx = 0;
 		bigp.vy = 0;
+
+		this.square = square;
+	}
+	
+	public Browniano(List<Particle> particles, double brwVelocity, Random rand,
+			double square, double smallMass, double bigMass) {
+		double bigV = Math.sqrt( (particles.size() - 1) * smallMass * brwVelocity * brwVelocity / bigMass);
+		
+		Particle bigp = null;
+		for (Particle p : particles) {
+			p.vx = 0;
+			p.vy = 0;//rand.nextDouble() * 2 * brwVelocity - brwVelocity;
+			if (bigp == null) {
+				bigp = p;
+			} else if (bigp.mass < p.mass) {
+				bigp = p;
+			}
+		}
+		bigp.vx = rand.nextDouble() * 2 * bigV - bigV;;
+		bigp.vy = rand.nextDouble() * 2 * bigV - bigV;;
 
 		this.square = square;
 	}
@@ -144,14 +167,14 @@ public class Browniano {
 
 	public void calcularVelocidades(List<Particle> particles) {
 		if (particleImpact2 != null) {
-			if (particleImpact1.mass > 10.0 || 10.0 < particleImpact2.mass){
-	            System.out.println("\tp1 y:"+ particleImpact1.y+ " mass: "+particleImpact1.mass );
-	            System.out.println("\tp1 vx:"+ particleImpact1.vx+"\tp1 vy:"+ particleImpact1.vy);
-	            
-	            System.out.println("\tp2 x:"+ particleImpact2.x+"\tp2 y:"+ particleImpact2.y+ " mass: "+particleImpact2.mass );
-	            System.out.println("\tp2 vx:"+ particleImpact2.vx+"\tp2 vy:"+ particleImpact2.vy);
-	            System.out.println();
-			}
+//			if (particleImpact1.mass > 10.0 || 10.0 < particleImpact2.mass){
+//	            System.out.println("\tp1 y:"+ particleImpact1.y+ " mass: "+particleImpact1.mass );
+//	            System.out.println("\tp1 vx:"+ particleImpact1.vx+"\tp1 vy:"+ particleImpact1.vy);
+//	            
+//	            System.out.println("\tp2 x:"+ particleImpact2.x+"\tp2 y:"+ particleImpact2.y+ " mass: "+particleImpact2.mass );
+//	            System.out.println("\tp2 vx:"+ particleImpact2.vx+"\tp2 vy:"+ particleImpact2.vy);
+//	            System.out.println();
+//			}
 			double sigma = particleImpact2.radius + particleImpact1.radius;
 			double deltaX = particleImpact2.x - particleImpact1.x;
 			double deltaY = particleImpact2.y - particleImpact1.y;
